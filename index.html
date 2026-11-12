@@ -207,7 +207,7 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px
     </div>
   </div>
   <div class="page" id="page-tasks"></div>
-  <div class="credit" style="padding-top:22px">ArtimoManager, created by Martin Hejhal, 2026, v1.0</div>
+  <div class="credit" style="padding-top:22px">ArtimoManager, created by Martin Hejhal, 2026, v1.1</div>
 </div>
 <div id="modalRoot"></div>
 <div class="toasts" id="toasts"></div>
@@ -215,14 +215,25 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px
 <script>
 "use strict";
 // ===================== SPOLEČNÉ JÁDRO (Vedoucí + Pomocník) =====================
-const VERSION = "v1.0";
-const firebaseConfig = {
+const VERSION = "v1.1";
+// Dva oddělené Firebase projekty:
+//  COUNTER = data sčitatele (artimo-counter) – odsud se POUZE ČTE, zápisová funkce k němu vůbec nevede
+//  OPS     = vlastní data správy soutěže (artimo-competition) – docházka, úkoly, harmonogram
+const COUNTER_CONFIG = {
   apiKey: "AIzaSyDDyx-mv5Ugi-5xEkUtPnWjGl_RuyHOwDI",
   authDomain: "artimo-counter.firebaseapp.com",
   projectId: "artimo-counter",
   storageBucket: "artimo-counter.firebasestorage.app",
   messagingSenderId: "953081589311",
   appId: "1:953081589311:web:787c967a46f3cc9c1d928a"
+};
+const OPS_CONFIG = {
+  apiKey: "AIzaSyDIackmxkFwN6_NCbxGRX4JTnyuSwHii1E",
+  authDomain: "artimo-competition.firebaseapp.com",
+  projectId: "artimo-competition",
+  storageBucket: "artimo-competition.firebasestorage.app",
+  messagingSenderId: "1026833066311",
+  appId: "1:1026833066311:web:25e469b13413a123a00462"
 };
 const FB = "https://www.gstatic.com/firebasejs/10.12.2/";
 const DANCES = { W:"Waltz", T:"Tango", V:"Valčík", F:"Slowfox", Q:"Quickstep",
@@ -249,24 +260,29 @@ const deviceId = (() => { let d = store.get("am_device"); if (!d) { d = newId();
 const DEL = { __del: true };
 function guard(path) { if (!/^sprava\/[^/]+/.test(path)) throw new Error("Zápis mimo kolekci sprava/ je zakázán: " + path); }
 
-// ---------- živý režim: Firebase (samostatně pojmenovaná aplikace = vlastní cache i přihlášení) ----------
+// ---------- živý režim: dvě samostatně pojmenované Firebase aplikace (vlastní cache i přihlášení) ----------
 const Live = {
   async init() {
     const [A, U, F] = await Promise.all([import(FB + "firebase-app.js"), import(FB + "firebase-auth.js"), import(FB + "firebase-firestore.js")]);
-    const app = A.initializeApp(firebaseConfig, "artimo-sprava");
-    const auth = U.getAuth(app);
-    try { this.db = F.initializeFirestore(app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) }); }
-    catch { this.db = F.initializeFirestore(app, { localCache: F.memoryLocalCache() }); }
     this.F = F;
-    await new Promise((res, rej) => { U.onAuthStateChanged(auth, u => { if (u) res(); }); U.signInAnonymously(auth).catch(rej); });
+    const open = async (cfg, name) => {
+      const app = A.initializeApp(cfg, name), auth = U.getAuth(app); let db;
+      try { db = F.initializeFirestore(app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) }); }
+      catch { db = F.initializeFirestore(app, { localCache: F.memoryLocalCache() }); }
+      await new Promise((res, rej) => { U.onAuthStateChanged(auth, u => { if (u) res(); }); U.signInAnonymously(auth).catch(rej); });
+      return db;
+    };
+    [this.dbCounter, this.dbOps] = await Promise.all([open(COUNTER_CONFIG, "artimo-manager-counter"), open(OPS_CONFIG, "artimo-manager-ops")]);
   },
-  ref(path) { const p = path.split("/"); return p.length % 2 === 0 ? this.F.doc(this.db, ...p) : this.F.collection(this.db, ...p); },
+  mk(db, path) { const p = path.split("/"); return p.length % 2 === 0 ? this.F.doc(db, ...p) : this.F.collection(db, ...p); },
+  ref(path) { return this.mk(path.startsWith("sprava/") ? this.dbOps : this.dbCounter, path); },      // čtení: podle cesty
+  wref(path) { guard(path); return this.mk(this.dbOps, path); },                                       // zápis: vždy jen projekt správy
   conv(v) { if (v === DEL) return this.F.deleteField(); if (Array.isArray(v) || v === null || typeof v !== "object") return v; return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, this.conv(x)])); },
   watchDoc(path, cb, onErr) { return this.F.onSnapshot(this.ref(path), { includeMetadataChanges: true }, s => cb(s.exists() ? s.data() : null, { fromCache: s.metadata.fromCache }), onErr); },
   watchCol(path, cb, onErr) { return this.F.onSnapshot(this.ref(path), { includeMetadataChanges: true }, s => cb(s.docs.map(d => ({ id: d.id, ...d.data() })), { fromCache: s.metadata.fromCache }), onErr); },
   async getCol(path) { return (await this.F.getDocs(this.ref(path))).docs.map(d => ({ id: d.id, ...d.data() })); },
-  set(path, data) { guard(path); return this.F.setDoc(this.ref(path), this.conv(data), { merge: true }); },
-  del(path) { guard(path); return this.F.deleteDoc(this.ref(path)); }
+  set(path, data) { return this.F.setDoc(this.wref(path), this.conv(data), { merge: true }); },
+  del(path) { return this.F.deleteDoc(this.wref(path)); }
 };
 
 // ---------- ukázkový režim: data jen v tomto prohlížeči (sdílená mezi kartami) ----------
@@ -485,7 +501,7 @@ function draw() {
   $("taskCnt").hidden = !openTasks; $("taskCnt").textContent = openTasks;
   let bn = "";
   if (DEMO) bn += `<div class="banner demo"><b>Ukázkový režim.</b> Data jsou vymyšlená a zůstávají jen v tomto prohlížeči, do Firebase se nic neposílá. <span class="sp"></span><button class="btn sm blue" data-act="demoStep">Posunout soutěž o krok</button><button class="btn sm" data-act="demoReset">Obnovit ukázku</button></div>`;
-  if (S.rulesMissing) bn += `<div class="banner"><b>Docházku, úkoly a harmonogram zatím nelze ukládat.</b> Čtení dat sčitatele funguje, ale pravidla Firebase ještě nepovolují kolekci <code>sprava</code>. Doplňte do pravidel blok ze souboru firestore.rules.</div>`;
+  if (S.rulesMissing) bn += `<div class="banner"><b>Docházku, úkoly a harmonogram zatím nelze ukládat.</b> Čtení dat sčitatele funguje, ale projekt <code>artimo-competition</code> zápis odmítá. Zkontrolujte jeho pravidla (Firestore → Rules) a zapnuté anonymní přihlášení.</div>`;
   if (S.loaded.comp && !S.compDoc) bn += `<div class="banner">Soutěž s ID <b>${esc(S.comp)}</b> v databázi sčitatele není. Vyberte jinou tlačítkem Soutěž… vpravo nahoře.</div>`;
   if ($("banner").dataset.h !== bn) { $("banner").innerHTML = bn; $("banner").dataset.h = bn; }
   if (page === "over") drawOver(now);

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Informatika – ZŠ Šestajovice</title>
+<meta name="description" content="Rozcestník informatiky ZŠ Šestajovice – ročníky, aplikace, nástroje a materiály na jednom místě.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#FFC700;
+    --green:#7ED957;
+    --navy:#002151;
+    --white:#FAFAFA;
+    --glass:rgba(0,33,81,.035);
+    --glass-strong:rgba(255,199,0,.14);
+    --glass-border:rgba(0,33,81,.08);
+    --navy-glass:#002151;
+    --shadow:0 6px 20px rgba(0,33,81,.06);
+    --r-lg:28px;
+    --r-md:20px;
+    --r-sm:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:90px}
+  body{
+    -webkit-tap-highlight-color:transparent;
+    -webkit-text-size-adjust:100%;
+    font-family:'Outfit',system-ui,sans-serif;
+    color:var(--navy);
+    background:#FFFFFF;
+    min-height:100vh;
+    overflow-x:hidden;
+    font-weight:400;
+  }
+  /* pozadí – barevné skvrny pod skleněnými kartami */
+
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 28px 60px}
+
+  .glass{
+    background:var(--glass);
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    border:1px solid var(--glass-border);
+    border-radius:var(--r-lg);
+    box-shadow:var(--shadow);
+  }
+
+  /* HERO */
+  .hero{
+    display:grid;grid-template-columns:1.4fr 1fr;gap:20px;margin-bottom:20px;
+  }
+  .hero-main{
+    background:var(--navy-glass);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-radius:var(--r-lg);
+    color:var(--white);
+    padding:36px 38px;
+    display:flex;align-items:center;gap:28px;
+    position:relative;overflow:hidden;
+    box-shadow:0 14px 40px rgba(0,33,81,.25);
+  }
+  .logo-bubble{flex:0 0 auto;width:118px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.25))}
+  .hero-kicker{
+    display:inline-block;background:var(--yellow);color:var(--navy);
+    font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+    padding:5px 12px;border-radius:999px;margin-bottom:10px;
+  }
+  .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:900;line-height:1;letter-spacing:-.01em}
+  .hero h1 small{display:block;font-size:1.05rem;font-weight:300;opacity:.85;margin-top:10px;letter-spacing:0}
+  .hero-side{display:grid;grid-template-rows:1fr 1fr;gap:20px}
+  .quick{
+    display:flex;align-items:center;gap:18px;padding:22px 24px;text-decoration:none;color:var(--navy);
+    transition:transform .2s ease, box-shadow .2s ease, background .2s;
+  }
+  .quick:hover{transform:translateY(-3px);background:var(--glass-strong);box-shadow:0 16px 36px rgba(0,33,81,.16)}
+  .quick .ico{
+    width:56px;height:56px;border-radius:18px;display:grid;place-items:center;flex:0 0 auto;
+    font-weight:800;font-size:1.4rem;
+  }
+  .quick.y .ico{background:var(--yellow)}
+  .quick.g .ico{background:var(--green)}
+  .quick b{display:block;font-size:1.15rem;font-weight:700}
+  .quick span{font-size:.92rem;opacity:.75}
+  .quick .arrow{margin-left:auto;font-size:1.4rem;opacity:.5;transition:transform .2s}
+  .quick:hover .arrow{transform:translateX(4px);opacity:1}
+
+  /* NAVIGACE */
+  nav.top{
+    position:sticky;top:12px;z-index:20;
+    display:flex;gap:8px;flex-wrap:wrap;padding:8px;margin-bottom:28px;
+    border-radius:999px;
+  }
+  nav.top a{
+    text-decoration:none;color:var(--navy);font-weight:600;font-size:.95rem;
+    padding:9px 18px;border-radius:999px;transition:background .2s,color .2s;
+  }
+  nav.top a:hover{background:var(--yellow)}
+  nav.top a.active{background:var(--navy);color:var(--white)}
+
+  section{margin-bottom:44px}
+  .sec-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+  .sec-head h2{
+    font-size:1.9rem;font-weight:800;display:flex;align-items:center;gap:12px;
+  }
+  .sec-head h2 .tag{
+    background:var(--yellow);border-radius:12px;padding:2px 12px;font-size:1.9rem;
+  }
+  .sec-head p{opacity:.7;font-weight:300}
+
+  /* ROČNÍKY */
+  .grades{display:grid;grid-template-columns:260px 1fr;gap:20px}
+  .grade-tabs{padding:12px;display:flex;flex-direction:column;gap:6px;align-self:start}
+  .grade-tab{
+    all:unset;cursor:pointer;display:grid;grid-template-columns:44px 1fr;align-items:center;column-gap:14px;
+    height:68px;padding:0 14px;border-radius:var(--r-sm);font-weight:600;transition:background .2s;
+  }
+  .grade-tab .n{
+    width:44px;height:44px;min-width:44px;border-radius:13px;display:grid;place-items:center;
+    font-variant-numeric:tabular-nums;line-height:1;
+    background:rgba(0,33,81,.08);font-weight:800;font-size:1.2rem;transition:background .2s,color .2s;
+  }
+  .grade-tab:hover{background:rgba(255,199,0,.25)}
+  .grade-tab.active{background:#FFFFFF;box-shadow:0 4px 14px rgba(0,33,81,.08)}
+  .grade-tab.active .n{background:var(--yellow)}
+  .grade-tab .lbl{line-height:1.2}
+  .grade-tab small{display:block;font-weight:400;font-size:.82rem;opacity:.65;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .grade-tab:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+
+  .grade-panel{padding:32px 34px;position:relative;overflow:hidden}
+  .grade-panel .big{
+    position:absolute;right:28px;top:4px;font-size:10rem;font-weight:900;line-height:1;
+    color:var(--yellow);opacity:.28;pointer-events:none;
+  }
+  .grade-panel h3{font-size:1.7rem;font-weight:800;margin-bottom:4px;position:relative}
+  .grade-panel .role{font-size:1.1rem;font-weight:300;margin-bottom:22px;position:relative}
+  .areas{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;position:relative}
+  .area{
+    background:#FFFFFF;border:1px solid rgba(0,33,81,.08);
+    border-radius:var(--r-sm);padding:14px 16px;
+  }
+  .area h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .area h4 i{width:10px;height:10px;border-radius:4px;display:inline-block}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:.85rem;padding:4px 10px;border-radius:999px;background:rgba(0,33,81,.06)}
+
+  /* NÁSTROJE */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:10px;margin-bottom:18px;border-radius:var(--r-md)}
+  .search{
+    flex:1 1 220px;display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid rgba(0,33,81,.1);
+    border-radius:var(--r-sm);padding:10px 14px;
+  }
+  .search input{all:unset;flex:1;font:inherit;font-size:1rem;color:var(--navy)}
+  .search input::placeholder{color:rgba(0,33,81,.45)}
+  .filter{
+    all:unset;cursor:pointer;font-weight:600;font-size:.92rem;padding:9px 15px;border-radius:var(--r-sm);
+    background:#FFFFFF;border:1px solid rgba(0,33,81,.08);transition:background .2s,color .2s;
+  }
+  .filter:hover{background:rgba(255,199,0,.4)}
+  .filter.active{background:var(--navy);color:var(--white)}
+  .filter:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+
+  .group{margin-bottom:26px}
+  .group h3{font-size:1.15rem;font-weight:700;margin:0 0 12px 4px;display:flex;align-items:center;gap:10px}
+  .group h3 .dot{width:14px;height:14px;border-radius:5px}
+  .group h3 .count{font-weight:400;font-size:.85rem;opacity:.55}
+  .subgroup{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600;opacity:.55;margin:14px 0 8px 4px}
+  .tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .tool{
+    display:flex;align-items:center;gap:14px;padding:14px 16px;text-decoration:none;color:var(--navy);
+    background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--glass-border);border-radius:var(--r-md);
+    transition:transform .18s ease, box-shadow .18s ease, background .18s;
+  }
+  .tool:hover{transform:translateY(-3px);background:var(--glass-strong);box-shadow:0 12px 26px rgba(0,33,81,.13)}
+  .tool:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+  .tool .t-ico{
+    width:46px;height:46px;border-radius:15px;flex:0 0 auto;display:grid;place-items:center;
+    font-weight:800;font-size:1.05rem;
+  }
+  .tool b{display:block;font-weight:700;font-size:1.02rem}
+  .tool span{display:block;font-size:.84rem;opacity:.7;line-height:1.3}
+  .empty{display:none;padding:30px;text-align:center;opacity:.7}
+
+  /* SESTAAPP */
+  .playground{
+    background:var(--navy-glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-radius:var(--r-lg);padding:30px;color:var(--white);
+    box-shadow:0 14px 40px rgba(0,33,81,.22);
+  }
+  .playground .sec-head h2 .tag{color:var(--navy)}
+  .playground .sec-head p{color:var(--white)}
+  .apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .app{
+    text-decoration:none;color:var(--white);padding:20px;border-radius:var(--r-md);
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+    display:flex;flex-direction:column;gap:12px;transition:background .2s,transform .2s;
+  }
+  .app:hover{background:rgba(255,255,255,.15);transform:translateY(-3px)}
+  .app:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+  .app .row{display:flex;align-items:center;gap:12px}
+  .app .a-ico{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-weight:800;color:var(--navy)}
+  .app b{font-size:1.15rem;font-weight:700}
+  .app p{font-size:.9rem;opacity:.8;font-weight:300}
+  .app .pill{align-self:flex-start;font-size:.75rem;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(255,199,0,.2);color:var(--yellow)}
+
+  /* MATERIÁLY */
+  .materials{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .mat{display:flex;align-items:center;gap:16px;padding:18px 20px;text-decoration:none;color:var(--navy);transition:transform .2s,background .2s}
+  .mat:hover{transform:translateY(-3px);background:var(--glass-strong)}
+  .mat .pdf{width:52px;height:60px;border-radius:12px;background:var(--navy);color:var(--yellow);display:grid;place-items:center;font-weight:800;font-size:.85rem}
+  .mat b{display:block;font-weight:700}
+  .mat span{font-size:.85rem;opacity:.7}
+
+  footer{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;
+    padding:22px 26px;font-size:.92rem;
+  }
+  footer a{color:var(--navy);font-weight:600}
+  footer .muted{opacity:.65}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr}
+    .hero-side{grid-template-rows:none;grid-template-columns:1fr 1fr}
+    .grades{grid-template-columns:1fr}
+    .grade-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:8px}
+    .grade-tab{height:auto;padding:8px 0;grid-template-columns:1fr;justify-items:center}
+    .grade-tab .lbl{display:none}
+    .grade-tab .n{width:100%;max-width:52px;height:48px}
+    .grade-tab.active{box-shadow:none;background:transparent}
+  }
+  @media (max-width:600px){
+    html{scroll-padding-top:76px}
+    .wrap{padding:14px 14px 32px}
+    .glass{border-radius:var(--r-md)}
+    .hero{gap:12px;margin-bottom:12px}
+    .hero-main{flex-direction:row;align-items:center;gap:16px;padding:22px 20px;border-radius:var(--r-md)}
+    .logo-bubble{width:64px}
+    .hero-kicker{font-size:.65rem;padding:4px 9px;margin-bottom:6px}
+    .hero h1{font-size:2rem}
+    .hero h1 small{font-size:.9rem;margin-top:6px}
+    .hero-side{gap:10px}
+    .quick{flex-direction:column;align-items:flex-start;gap:10px;padding:14px}
+    .quick .ico{width:42px;height:42px;border-radius:13px;font-size:1.1rem}
+    .quick b{font-size:.98rem;line-height:1.2}
+    .quick span{font-size:.8rem;display:block;margin-top:2px}
+    .quick .arrow{display:none}
+    nav.top{top:8px;flex-wrap:nowrap;overflow-x:auto;border-radius:999px;margin-bottom:22px;scrollbar-width:none;padding:6px}
+    nav.top::-webkit-scrollbar{display:none}
+    nav.top a{flex:0 0 auto;padding:8px 14px;font-size:.9rem}
+    section{margin-bottom:32px}
+    .sec-head{margin-bottom:12px;gap:6px}
+    .sec-head h2{font-size:1.3rem;gap:10px;line-height:1.2}
+    .sec-head h2 .tag{font-size:1.1rem;padding:3px 9px;border-radius:10px;white-space:nowrap;flex:0 0 auto}
+    .sec-head p{font-size:.9rem}
+    .grade-tab .n{font-size:1.1rem;border-radius:12px}
+    .grade-panel{padding:20px 16px}
+    .grade-panel .big{display:none}
+    .grade-panel h3{font-size:1.35rem}
+    .grade-panel .role{font-size:.98rem;margin-bottom:16px}
+    .areas{grid-template-columns:1fr;gap:10px}
+    .toolbar{padding:8px;border-radius:var(--r-md)}
+    .search{flex-basis:100%}
+    #filters{flex-wrap:nowrap!important;overflow-x:auto;width:100%;scrollbar-width:none}
+    #filters::-webkit-scrollbar{display:none}
+    .filter{flex:0 0 auto;padding:8px 13px;font-size:.88rem}
+    .tools{grid-template-columns:1fr 1fr;gap:10px}
+    .tool{flex-direction:column;align-items:flex-start;gap:10px;padding:14px;border-radius:var(--r-sm)}
+    .tool .t-ico{width:40px;height:40px;border-radius:12px;font-size:.95rem}
+    .tool b{font-size:.95rem}
+    .tool span{font-size:.78rem}
+    .playground{padding:20px 14px;border-radius:var(--r-md)}
+    .apps{grid-template-columns:1fr;gap:10px}
+    .app{padding:16px}
+    .materials{grid-template-columns:1fr}
+    footer{flex-direction:column;align-items:flex-start;padding:18px}
+  }
+  @media (max-width:360px){
+    .hero-side{grid-template-columns:1fr}
+    .tools{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-main">
+      <svg class="logo-bubble" viewBox="0 0 120 110" aria-label="inf">
+        <path d="M24 6h72a18 18 0 0 1 18 18v42a18 18 0 0 1-18 18H44l-24 20 4-20a18 18 0 0 1-18-18V24A18 18 0 0 1 24 6z" fill="#FFC700"/>
+        <text x="60" y="58" text-anchor="middle" font-family="Outfit, sans-serif" font-weight="900" font-size="38" fill="#002151">inf</text>
+      </svg>
+      <div style="position:relative;z-index:1">
+        <span class="hero-kicker">ZŠ Šestajovice · Studovna</span>
+        <h1>Informatika<small>Všechno pro hodiny informatiky na jednom místě – od 4. do 9. ročníku.</small></h1>
+      </div>
+    </div>
+    <div class="hero-side">
+      <a class="quick glass y" href="https://padlet.com/marhejhal/informatika-ajs4lssw5xqvnx59" target="_blank" rel="noopener">
+        <div class="ico">P</div>
+        <div><b>INF Padlet</b><span>Informace, zdroje a novinky</span></div>
+        <div class="arrow">→</div>
+      </a>
+      <a class="quick glass g" href="https://docs.google.com/forms/d/e/1FAIpQLSfCRwduGX98_m1WpL3kBbHjetHh0LgnUs4JH0KOEAVXV5Jalg/viewform?usp=dialog" target="_blank" rel="noopener">
+        <div class="ico">?</div>
+        <div><b>Dotazník na úvod roku</b><span>Vyplň na začátku školního roku</span></div>
+        <div class="arrow">→</div>
+      </a>
+    </div>
+  </header>
+
+  <nav class="top glass" aria-label="Sekce stránky">
+    <a href="#rocniky">Ročníky</a>
+    <a href="#aplikace">Aplikace a nástroje</a>
+    <a href="#sestaapp">SestaApp</a>
+    <a href="#materialy">Materiály</a>
+  </nav>
+
+  <!-- ROČNÍKY -->
+  <section id="rocniky">
+    <div class="sec-head">
+      <h2><span class="tag">4–9</span> Co se naučíš v jednotlivých ročnících</h2>
+      <p>Vyber ročník a uvidíš, na čem budeme pracovat.</p>
+    </div>
+    <div class="grades">
+      <div class="grade-tabs glass" role="tablist" id="gradeTabs"></div>
+      <div class="grade-panel glass" role="tabpanel" id="gradePanel" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- NÁSTROJE -->
+  <section id="aplikace">
+    <div class="sec-head">
+      <h2><span class="tag">⌘</span> Aplikace a nástroje</h2>
+      <p>Klikni na dlaždici – odkaz se otevře v nové záložce.</p>
+    </div>
+    <div class="toolbar glass">
+      <label class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#002151" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="q" placeholder="Hledat aplikaci…" autocomplete="off">
+      </label>
+      <div id="filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div id="toolGroups"></div>
+    <div class="empty glass" id="empty">Nic jsme nenašli. Zkus jiné slovo.</div>
+  </section>
+
+  <!-- SESTAAPP -->
+  <section id="sestaapp" class="playground">
+    <div class="sec-head">
+      <h2><span class="tag">S</span> SestaApp · Playground</h2>
+      <p>Vlastní školní aplikace vytvořené pro naši výuku.</p>
+    </div>
+    <div class="apps">
+      <a class="app" href="https://hejhaledu.github.io/sesta-code/" target="_blank" rel="noopener">
+        <div class="row"><div class="a-ico" style="background:var(--yellow)">&lt;/&gt;</div><b>SestaCode (Python)</b></div>
+        <p>Procvičování Pythonu klikáním – výstup, vstup, podmínky a cykly.</p>
+        <span class="pill">8.–9. ročník</span>
+      </a>
+      <a class="app" href="https://hejhaledu.github.io/SestaCode/" target="_blank" rel="noopener">
+        <div class="row"><div class="a-ico" style="background:var(--green)">J</div><b>SestaCode Junior</b></div>
+        <p>Miniaplikace na algoritmické myšlení pro mladší žáky.</p>
+        <span class="pill">5.–6. ročník</span>
+      </a>
+      <a class="app" href="https://hejhaledu.github.io/SestaApp-Grid/" target="_blank" rel="noopener">
+        <div class="row"><div class="a-ico" style="background:#FAFAFA">▦</div><b>Grid</b></div>
+        <p>Tvorba krátkých testů k rozstřižení – více kopií na jeden list A4.</p>
+        <span class="pill">pro učitele</span>
+      </a>
+      <a class="app" href="https://hejhaledu.github.io/cestovni-prikaz/" target="_blank" rel="noopener">
+        <div class="row"><div class="a-ico" style="background:#FAFAFA">✈</div><b>Cesták</b></div>
+        <p>Vyplnění a výpočet cestovního příkazu.</p>
+        <span class="pill">pro zaměstnance</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- MATERIÁLY -->
+  <section id="materialy">
+    <div class="sec-head">
+      <h2><span class="tag">PDF</span> Materiály ke stažení</h2>
+    </div>
+    <div class="materials">
+      <a class="mat glass" href="https://www.zs6.cz/www/files/texts/python-pracovni-listy-ukrajinsky-3-strany-1.pdf" target="_blank" rel="noopener">
+        <div class="pdf">PDF</div>
+        <div><b>Python – pracovní listy (ukrajinsky)</b><span>3 strany · 115 kB</span></div>
+      </a>
+    </div>
+  </section>
+
+  <footer class="glass">
+    <div><b>Základní škola Šestajovice</b><br><span class="muted">Komenského 158, 250 92 Šestajovice · +420 770 320 154</span></div>
+    <div><a href="https://www.zs6.cz" target="_blank" rel="noopener">www.zs6.cz</a> <span class="muted">· © 2026</span></div>
+  </footer>
+</div>
+
+<script>
+/* ---------- ROČNÍKY ---------- */
+const GRADES = [
+  {n:4, short:"Začínající uživatel", role:"Samostatný začínající uživatel počítače", areas:[
+    ["Ovládání počítače", "#FFC700", ["přihlášení","plocha","myš a klávesnice","soubory a složky"]],
+    ["Pojmy", "#002151", ["hardware","software"]],
+    ["Tvorba", "#7ED957", ["jednoduchý dokument ve Wordu","rastrová grafika","první 3D model"]],
+    ["Programování", "#FFC700", ["logické hry","úvod do Scratche"]]
+  ]},
+  {n:5, short:"Komunikace a tvorba", role:"Komunikace a tvorba v digitálním prostředí", areas:[
+    ["Komunikace", "#002151", ["e-mail a přílohy","Outlook","Teams"]],
+    ["Dokumenty", "#7ED957", ["Word","PDF"]],
+    ["Grafika", "#FFC700", ["rastr × vektor","Tinkercad","začátky v Canvě"]],
+    ["Programování", "#FFC700", ["posloupnost","cykly","více postav ve Scratchi"]],
+    ["Bezpečnost", "#002151", ["bezpečnější pohyb na internetu"]]
+  ]},
+  {n:6, short:"Spolupráce a cloud", role:"Digitální tvůrce, který rozumí spolupráci a cloudu", areas:[
+    ["Dokumenty a cloud", "#002151", ["formátování dokumentů","OneDrive","sdílení a práva"]],
+    ["Tvorba", "#7ED957", ["prezentace v Canvě","animace"]],
+    ["Programování", "#FFC700", ["podmínky","senzory ve Scratchi"]],
+    ["Hardware", "#002151", ["stavba počítače","konektivita"]],
+    ["AI", "#7ED957", ["první systematická práce s AI"]]
+  ]},
+  {n:7, short:"Práce s daty", role:"Samostatnější tvůrce, který pracuje s daty", areas:[
+    ["Data", "#7ED957", ["Excel","tabulková data"]],
+    ["Programování", "#FFC700", ["proměnné","operátory","klonování ve Scratchi"]],
+    ["Projekty", "#FFC700", ["Canva","Tinkercad"]],
+    ["Počítač", "#002151", ["nastavení počítače"]],
+    ["Svět kolem nás", "#002151", ["základy o kryptoměnách"]]
+  ]},
+  {n:8, short:"Začínající programátor", role:"Pokročilý uživatel a začínající programátor", areas:[
+    ["Data", "#7ED957", ["kontingenční tabulky","komplexnější projekty"]],
+    ["Média", "#FFC700", ["úprava videa","voiceover","jednoduchý web"]],
+    ["Programování", "#FFC700", ["přechod ze Scratche do Pythonu"]],
+    ["AI a bezpečnost", "#002151", ["práce s AI","internetová bezpečnost","základy autorského práva"]]
+  ]},
+  {n:9, short:"Připraven na SŠ", role:"Digitálně kompetentní uživatel připravený na střední školu", areas:[
+    ["Do života", "#7ED957", ["životopis","jednoduchý výzkum","Forms"]],
+    ["Data", "#7ED957", ["zpracování dat","prezentace výsledků"]],
+    ["Programování", "#FFC700", ["Python – funkce","složitější datové struktury"]],
+    ["Zařízení a sítě", "#002151", ["nastavení počítače a telefonu","připojení","VPN"]],
+    ["Bezpečnost a etika", "#002151", ["bezpečnost","citace","AI a autorské právo"]]
+  ]}
+];
+const tabs = document.getElementById('gradeTabs');
+const panel = document.getElementById('gradePanel');
+function showGrade(i){
+  const g = GRADES[i];
+  [...tabs.children].forEach((t,j)=>{t.classList.toggle('active',i===j);t.setAttribute('aria-selected',i===j)});
+  panel.innerHTML = `<div class="big" aria-hidden="true">${g.n}.</div>
+    <h3>${g.n}. ročník</h3><p class="role">${g.role}</p>
+    <div class="areas">${g.areas.map(([h,c,items])=>`
+      <div class="area"><h4><i style="background:${c}"></i>${h}</h4>
+      <div class="chips">${items.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>`).join('')}
+    </div>`;
+}
+GRADES.forEach((g,i)=>{
+  const b=document.createElement('button');
+  b.className='grade-tab';b.setAttribute('role','tab');
+  b.innerHTML=`<span class="n">${g.n}</span><span class="lbl">${g.n}. ročník<small>${g.short}</small></span>`;
+  b.onclick=()=>showGrade(i);
+  tabs.appendChild(b);
+});
+showGrade(0);
+
+/* ---------- NÁSTROJE ---------- */
+const CATS = [
+  {id:"prog", name:"Programování", color:"#FFC700", subs:[
+    {name:"Hry a hádanky", items:[
+      ["Compute","https://compute-it.toxicode.fr/","Programovací hádanky"],
+      ["Dot","https://little-dot.toxicode.fr/","Hádanky pro začínající"],
+      ["S. Teacher","https://silentteacher.toxicode.fr/","Silent Teacher – čtení kódu"],
+      ["Maze","https://studio.code.org/hoc/1","Bludiště s bloky (Code.org)"],
+      ["Blockly","https://blockly.games/","Blockly Games – série her"],
+      ["Monkey","https://app.codemonkey.com/challenges/1","CodeMonkey – výzvy"],
+      ["Bobřík","https://www.ibobr.cz/","Bobřík informatiky – soutěž"]
+    ]},
+    {name:"Bloky", items:[
+      ["Scratch","https://scratch.mit.edu/","Blokové programování"],
+      ["EBlocks","https://edublocks.org/","EduBlocks – z bloků do Pythonu"]
+    ]},
+    {name:"Python", items:[
+      ["Python","https://www.programiz.com/python-programming/online-compiler/","Online kompilátor Programiz"],
+      ["Krython","https://krython.vnovak.cz/","Python v prohlížeči"],
+      ["IDE Kristiána","https://www.online-ide.com/","Online vývojové prostředí"],
+      ["Sesta_code","https://hejhaledu.github.io/sesta-code/","SestaCode – procvičování Pythonu"],
+      ["Junior","https://hejhaledu.github.io/SestaCode/","SestaCode Junior"]
+    ]}
+  ]},
+  {id:"office", name:"Office", color:"#002151", subs:[{items:[
+    ["Word","https://word.cloud.microsoft/","Textový editor online"],
+    ["Outlook","http://outlook.office.com/","Školní e-mail"],
+    ["Teams","https://teams.microsoft.com/","Třídní týmy a úkoly"]
+  ]}]},
+  {id:"ai", name:"Umělá inteligence", color:"#7ED957", subs:[{items:[
+    ["ChatGPT","https://chatgpt.com/","Chatovací asistent"],
+    ["Copilot","https://copilot.microsoft.com/","Asistent od Microsoftu"],
+    ["Gemini","https://gemini.google.com/","Asistent od Googlu"],
+    ["NotebookLM","https://notebooklm.google/","Práce s vlastními zdroji"]
+  ]}]},
+  {id:"grafika", name:"Grafika", color:"#FFC700", subs:[{items:[
+    ["Tinkercad","https://www.tinkercad.com/","3D modelování"],
+    ["Canva","https://www.canva.com/cs_cz/","Prezentace a grafika"],
+    ["Method","https://editor.method.ac/","Vektorový editor"],
+    ["Malování","https://jspaint.app/#local:e5ff8f75104108","Malování v prohlížeči"],
+    ["Bezier","https://bezier.method.ac/","Hra s Bézierovými křivkami"]
+  ]}]},
+  {id:"ostatni", name:"Ostatní", color:"#002151", subs:[{items:[
+    ["H. psaní","https://hvezdnepsani.cz/","Hvězdné psaní – psaní na klávesnici"],
+    ["JOP","http://home.pf.jcu.cz/jop/unity/index.html","Výuková aplikace JOP"],
+    ["Metodiky","https://kurikulum.aidetem.cz/ju-a-pi-metodicke-materialy-pro-informatiku-1-stupen/","Ju a Pí – materiály pro 1. stupeň"],
+    ["Focení","https://jherr.github.io/depth-of-field/","Simulátor hloubky ostrosti"],
+    ["Classroom Screen","https://classroomscreen.com/","Tabule pro hodinu"],
+    ["Plickers","https://get.plickers.com/","Rychlé hlasování"],
+    ["Slido","https://www.slido.com/","Otázky a ankety"],
+    ["Zen","https://www.classroomzen.com/","Classroom Zen – časovač a tabule"]
+  ]}]}
+];
+const groupsEl=document.getElementById('toolGroups');
+const filtersEl=document.getElementById('filters');
+const q=document.getElementById('q');
+const empty=document.getElementById('empty');
+let activeCat='all';
+
+function tileText(name){return name.replace(/[^A-Za-zÁ-ž]/g,'').slice(0,2)}
+function render(){
+  const term=q.value.trim().toLowerCase();
+  let total=0;
+  groupsEl.innerHTML=CATS.filter(c=>activeCat==='all'||c.id===activeCat).map(c=>{
+    let n=0;
+    const subs=c.subs.map(s=>{
+      const items=s.items.filter(([a,,d])=>!term||(a+' '+d).toLowerCase().includes(term));
+      n+=items.length;
+      if(!items.length) return '';
+      const fg=c.color==='#002151'?'#FAFAFA':'#002151';
+      return (s.name?`<div class="subgroup">${s.name}</div>`:'')+
+        `<div class="tools">${items.map(([a,u,d])=>`
+          <a class="tool" href="${u}" target="_blank" rel="noopener">
+            <div class="t-ico" style="background:${c.color};color:${fg}">${tileText(a)}</div>
+            <div><b>${a}</b><span>${d}</span></div></a>`).join('')}</div>`;
+    }).join('');
+    total+=n;
+    if(!n) return '';
+    return `<div class="group"><h3><span class="dot" style="background:${c.color}"></span>${c.name}<span class="count">${n}</span></h3>${subs}</div>`;
+  }).join('');
+  empty.style.display=total?'none':'block';
+}
+[['all','Vše'],...CATS.map(c=>[c.id,c.name])].forEach(([id,name])=>{
+  const b=document.createElement('button');
+  b.className='filter'+(id==='all'?' active':'');b.textContent=name;
+  b.onclick=()=>{activeCat=id;[...filtersEl.children].forEach(x=>x.classList.toggle('active',x===b));render()};
+  filtersEl.appendChild(b);
+});
+q.addEventListener('input',render);
+render();
+
+/* ---------- aktivní položka v navigaci ---------- */
+const navLinks=[...document.querySelectorAll('nav.top a')];
+const obs=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting) navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));
+}),{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

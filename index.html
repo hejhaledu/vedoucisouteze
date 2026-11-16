@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- ArtimoManager – Vedoucí – verze v1.2 – sestaveno 2026-11-16 – created by Martin Hejhal -->
 <html lang="cs">
 <head>
 <meta charset="utf-8">
@@ -32,7 +33,7 @@ button,input,select,textarea{font-family:inherit;color:inherit}
 .row{display:flex;gap:8px;align-items:center}.row.wrap{flex-wrap:wrap}.grow{flex:1;min-width:0}.sp{flex:1}
 .switch{position:relative;display:inline-block;width:36px;height:22px;flex:0 0 auto}
 .switch input{opacity:0;width:0;height:0}
-.switch span{position:absolute;inset:0;border-radius:11px;background:rgba(120,120,128,.36);transition:background .2s;cursor:pointer}
+.switch span{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:11px;background:rgba(120,120,128,.36);transition:background .2s;cursor:pointer}
 .switch span::after{content:"";position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.3);transition:transform .2s}
 .switch input:checked+span{background:var(--red)}
 .switch input:checked+span::after{transform:translateX(14px)}
@@ -158,7 +159,7 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px
 .toast{pointer-events:auto;padding:11px 14px;border-radius:12px;background:#3a1420;border:1px solid rgba(255,90,95,.55);color:#ffd5d6;box-shadow:0 12px 30px rgba(0,0,0,.45);font-size:13px;line-height:1.45;cursor:pointer;animation:pop .18s}
 .toast.ok{background:#0f2e1c;border-color:rgba(52,199,89,.55);color:#c8f5d6}
 .toast b{display:block;margin-bottom:2px}
-.backdrop{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fade .15s}
+.backdrop{position:fixed;top:0;left:0;right:0;bottom:0;z-index:50;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fade .15s}
 .modal{width:min(520px,100%);max-height:90vh;overflow:auto;background:#151a52;border:1px solid var(--stroke2);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.5);animation:pop .18s}
 .modal .mh{padding:16px 18px 6px;font-size:16px;font-weight:700}
 .modal .mb{padding:0 18px 6px}
@@ -169,15 +170,24 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px
 .mrow b{display:block}.mrow small{color:var(--text3);font-size:11px}
 .qrbox{display:flex;justify-content:center;padding:10px;background:#fff;border-radius:12px;margin:12px auto 4px;width:fit-content}
 .qrbox svg{display:block;width:220px;height:220px}
-#boot{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--text2);line-height:1.6;padding:20px}
+.alert{position:sticky;top:51px;z-index:19;margin:0;padding:10px 20px;background:var(--red);color:#fff;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 8px 24px rgba(255,90,95,.35);font-size:14px}
+.alert b{font-size:15px}
+.alert .btn{background:#fff;color:#b3161b}
+.alert .btn.ghost{background:rgba(255,255,255,.2);color:#fff}
+.alert+.alert{border-top:1px solid rgba(255,255,255,.35)}
+.qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.qchip{height:28px;padding:0 11px;border-radius:14px;border:1px solid var(--stroke2);background:transparent;color:var(--text);font-size:12px;font-weight:600;cursor:pointer}
+.qchip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.place{font-size:12px;color:var(--accent);margin-top:2px}
+#boot{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--text2);line-height:1.6;padding:20px}
 </style>
 </head>
 <body>
-<div id="boot"><div><img src="data:image/png;base64,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" alt="Artimo" style="height:56px;margin-bottom:14px"><div class="brand" style="font-size:20px">ARTIMO <span>MANAGER</span></div><div id="bootMsg" style="margin-top:12px">Načítám aplikaci Vedoucí…</div></div></div>
+<div id="boot"><div><img src="data:image/png;base64,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" alt="Artimo" style="height:56px;margin-bottom:14px"><div class="brand" style="font-size:20px">ARTIMO <span>MANAGER</span></div><div id="bootMsg" style="margin-top:12px">Načítám aplikaci Vedoucí</div></div></div>
 
 <header class="hidden" id="hdr">
   <img class="logo" src="data:image/png;base64,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" alt="Artimo">
-  <div class="brand">ARTIMO <span>MANAGER</span><small id="compTitle">Vedoucí soutěže</small></div>
+  <div class="brand">ARTIMO <span>MANAGER</span><small id="compTitle">Vedoucí akce</small></div>
   <div class="seg lg" id="pageSeg">
     <button data-page="over" class="on">Přehled</button>
     <button data-page="plan">Harmonogram</button>
@@ -187,9 +197,10 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px
   <div class="sp"></div>
   <span class="badge demo hidden" id="demoTag">UKÁZKA</span>
   <div class="clock" id="clock"></div>
-  <button class="btn sm" id="compBtn">Soutěž…</button>
-  <div class="conn"><span class="dot" id="connDot"></span><span id="connText">Připojování…</span></div>
+  <button class="btn sm" id="compBtn">Akce</button>
+  <div class="conn"><span class="dot" id="connDot"></span><span id="connText">Připojování</span></div>
 </header>
+<div id="alerts"></div>
 <div id="banner"></div>
 
 <div class="wrap hidden" id="app">
@@ -199,7 +210,7 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px
     <div class="card pad">
       <div class="head">
         <h2>Startující</h2><span class="muted" id="listCnt"></span><div class="sp"></div>
-        <input class="in" id="listQ" placeholder="Hledat číslo nebo jméno" style="width:220px">
+        <input class="in" id="listQ" placeholder="Číslo, jméno nebo soutěž" style="width:220px">
         <select class="in" id="listCat" style="width:200px"></select>
         <div class="seg" id="listSeg"><button data-f="all" class="on">Všichni</button><button data-f="in">Přítomní</button><button data-f="out">Chybí</button></div>
       </div>
@@ -207,7 +218,7 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px
     </div>
   </div>
   <div class="page" id="page-tasks"></div>
-  <div class="credit" style="padding-top:22px">ArtimoManager, created by Martin Hejhal, 2026, v1.1</div>
+  <div class="credit" style="padding-top:22px">ArtimoManager, created by Martin Hejhal, 2026, v1.2</div>
 </div>
 <div id="modalRoot"></div>
 <div class="toasts" id="toasts"></div>
@@ -215,7 +226,7 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px
 <script>
 "use strict";
 // ===================== SPOLEČNÉ JÁDRO (Vedoucí + Pomocník) =====================
-const VERSION = "v1.1";
+const VERSION = "v1.2";
 // Dva oddělené Firebase projekty:
 //  COUNTER = data sčitatele (artimo-counter) – odsud se POUZE ČTE, zápisová funkce k němu vůbec nevede
 //  OPS     = vlastní data správy soutěže (artimo-competition) – docházka, úkoly, harmonogram
@@ -239,6 +250,18 @@ const FB = "https://www.gstatic.com/firebasejs/10.12.2/";
 const DANCES = { W:"Waltz", T:"Tango", V:"Valčík", F:"Slowfox", Q:"Quickstep",
                  S:"Samba", C:"Cha-cha", R:"Rumba", P:"Paso doble", J:"Jive", K:"Polka" };
 const TASK_TYPES = { health:"Zdravotní", floor:"Parket", tech:"Technika a hudba", org:"Organizace", lost:"Ztráty a nálezy", other:"Jiné" };
+// Rychlé fráze k hlášení – stačí klepnout, psaní je nepovinné.
+const QUICK = {
+  health: ["Nevolnost", "Zranění", "Krvácení", "Úraz kotníku", "Potřebuje lékaře", "Potřebuje lékárničku"],
+  floor:  ["Kluzké místo", "Rozlité pití", "Předmět na parketu", "Poškozený parket"],
+  tech:   ["Hudba nehraje", "Mikrofon", "Světla", "Elektřina", "Výsledky / projekce"],
+  org:    ["Chybí voda", "Plno v šatně", "Porota něco potřebuje", "Hledá se startující", "Potřebuji posilu"],
+  lost:   ["Nalezená věc", "Ztracená věc", "Ztracené dítě"],
+  other:  ["Potřebuji pomoc", "Pošlete někoho"]
+};
+const URGENT_TAGS = ["Krvácení", "Potřebuje lékaře", "Ztracené dítě", "Elektřina"];
+// Text hlášení složený z klepnutých frází a poznámky (aspoň název typu, kdyby nebylo nic).
+const composeText = (type, tags, note) => [tags.join(", "), note.trim()].filter(Boolean).join(" – ") || (TASK_TYPES[type] || "Hlášení") + " – bez popisu";
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 const store = { get(k){ try { return localStorage.getItem(k); } catch { return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch {} } };
@@ -248,7 +271,8 @@ const min2hm = m => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${Strin
 const dayMin = ms => { const d = new Date(ms); return d.getHours() * 60 + d.getMinutes(); };
 const ago = ms => { if (!ms) return "–"; const s = Math.max(0, Math.round((Date.now() - ms) / 1000)); return s < 60 ? "teď" : s < 3600 ? `před ${Math.round(s / 60)} min` : `před ${Math.floor(s / 3600)} h`; };
 const norm = s => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();     // hledání bez diakritiky
-const matchQ = (x, q) => !q || String(x.n).startsWith(q) || norm(x.name).includes(q);
+const matchQ = (x, q) => !q || String(x.n).startsWith(q) || norm(x.name).includes(q) || x.cats.some(c => norm(c.name).includes(q));
+const slug = s => norm(s).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
 const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const errText = e => e?.code === "permission-denied" ? "Server zápis odmítl (pravidla Firebase)." : e?.code === "unavailable" ? "Bez připojení k internetu." : (e?.message || String(e));
 const byCreated = (a, b) => (a.created || 0) - (b.created || 0);
@@ -279,7 +303,8 @@ const Live = {
   wref(path) { guard(path); return this.mk(this.dbOps, path); },                                       // zápis: vždy jen projekt správy
   conv(v) { if (v === DEL) return this.F.deleteField(); if (Array.isArray(v) || v === null || typeof v !== "object") return v; return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, this.conv(x)])); },
   watchDoc(path, cb, onErr) { return this.F.onSnapshot(this.ref(path), { includeMetadataChanges: true }, s => cb(s.exists() ? s.data() : null, { fromCache: s.metadata.fromCache }), onErr); },
-  watchCol(path, cb, onErr) { return this.F.onSnapshot(this.ref(path), { includeMetadataChanges: true }, s => cb(s.docs.map(d => ({ id: d.id, ...d.data() })), { fromCache: s.metadata.fromCache }), onErr); },
+  // _pending = zápis z tohoto zařízení ještě nedorazil na server (bez signálu)
+  watchCol(path, cb, onErr) { return this.F.onSnapshot(this.ref(path), { includeMetadataChanges: true }, s => cb(s.docs.map(d => ({ id: d.id, ...d.data(), _pending: !!d.metadata?.hasPendingWrites })), { fromCache: s.metadata.fromCache }), onErr); },
   async getCol(path) { return (await this.F.getDocs(this.ref(path))).docs.map(d => ({ id: d.id, ...d.data() })); },
   set(path, data) { return this.F.setDoc(this.wref(path), this.conv(data), { merge: true }); },
   del(path) { return this.F.deleteDoc(this.wref(path)); }
@@ -287,7 +312,7 @@ const Live = {
 
 // ---------- ukázkový režim: data jen v tomto prohlížeči (sdílená mezi kartami) ----------
 const Demo = {
-  key: "am_demo_v1", docs: {}, subs: new Set(),
+  key: "am_demo_v2", docs: {}, subs: new Set(),
   async init() {
     this.load(); if (!Object.keys(this.docs).length) { this.docs = demoSeed(); this.save(); }
     // změny si karty posílají přímo (localStorage se mezi kartami propisuje se zpožděním)
@@ -315,13 +340,24 @@ async function initBackend() { B = DEMO ? Demo : Live; await B.init(); }
 
 // ---------- stav ----------
 const S = { comp: null, compDoc: null, cats: [], rounds: [], ops: {}, prez: {}, tasks: [], helpers: [], rulesMissing: false, loaded: {} };
-const catsSorted = () => [...S.cats].sort((a, b) => (a.order ?? 1e9) - (b.order ?? 1e9) || byCreated(a, b));
+// pořadí soutěží stejně jako ve Sčitateli v5.x
+const catsSorted = () => [...S.cats].sort((a, b) => (a.order ?? a.created ?? 0) - (b.order ?? b.created ?? 0));
 const catById = id => S.cats.find(c => c.id === id);
 const roundsOf = cid => S.rounds.filter(r => r.categoryId === cid).sort(byCreated);
 const sched = () => Array.isArray(S.ops.schedule) ? S.ops.schedule : [];
-const nameOf = n => S.compDoc?.names?.[n] || "";
+// Counter v4.2+: jména jsou u každé soutěže (categories/{cid}.names), číslo platí jen v rámci soutěže.
+// Starší akce měly jména v compDoc.names – ta slouží jen jako záloha.
+const nameIn = (cid, n) => catById(cid)?.names?.[String(n)] || S.compDoc?.names?.[String(n)] || "";
+const couplesOf = c => (Array.isArray(c?.couples) && c.couples.length ? c.couples : Object.keys(c?.names || {}).map(Number)).filter(Number.isInteger);
+const isOut = (cid, n) => !!S.compDoc?.withdrawn?.[cid]?.[String(n)];       // odstoupil (Counter v4.1+)
+// Klíč osoby pro docházku: stejné číslo i jméno v několika soutěžích = jeden člověk.
+const pkOf = (n, name) => { const s = slug(name); return s ? `${n}-${s}` : String(n); };
+const pkIn = (cid, n) => pkOf(n, nameIn(cid, n));
+const presentIn = (cid, n) => S.prez[pkIn(cid, n)];
+// Kdo je číslo n (pro hlášení bez soutěže): všechna různá jména s tímto číslem.
+const whoIs = n => [...new Set(S.cats.map(c => nameIn(c.id, n)).filter(Boolean))].join(" / ");
 
-// Stav kategorie odvozený z kol sčitatele.
+// Stav soutěže odvozený z kol sčitatele.
 function catState(cid) {
   const rs = roundsOf(cid);
   const open = rs.filter(r => r.status === "open").pop(); if (open) return { code: "open", text: "Probíhá · " + open.label };
@@ -345,20 +381,26 @@ function buildNow() {
 function parseNow() { try { return S.ops.nowJson ? JSON.parse(S.ops.nowJson) : null; } catch { return null; } }
 function starters() {
   const m = new Map();
-  for (const c of catsSorted()) for (const n of c.couples || []) { if (!m.has(n)) m.set(n, { n, name: nameOf(n), cats: [] }); m.get(n).cats.push(c); }
-  return [...m.values()].sort((a, b) => a.n - b.n);
+  for (const c of catsSorted()) for (const n of couplesOf(c)) {
+    const name = nameIn(c.id, n), key = pkOf(n, name);
+    if (!m.has(key)) m.set(key, { key, n, name, cats: [], out: new Set() });
+    const x = m.get(key); x.cats.push(c); if (isOut(c.id, n)) x.out.add(c.id);
+  }
+  return [...m.values()].sort((a, b) => a.n - b.n || a.name.localeCompare(b.name, "cs"));
 }
-const missingOf = cat => (cat?.couples || []).filter(n => !S.prez[n]).sort((a, b) => a - b);
+// Chybějící v soutěži (odstoupivší se nepočítají).
+const missingOf = cat => couplesOf(cat).filter(n => !isOut(cat.id, n) && !presentIn(cat.id, n)).sort((a, b) => a - b);
+const activeOf = cat => couplesOf(cat).filter(n => !isOut(cat.id, n));
 // Harmonogram: index položky, která následuje po poslední zahájené.
 function nextIndex(now) {
   const sc = sched(); let last = -1;
   sc.forEach((it, i) => { if (it.cid && now?.states?.[it.cid] && now.states[it.cid].code !== "wait") last = i; });
-  if (last >= 0 && now.states[sc[last].cid].code === "between") return last;       // kategorie čeká na další kolo
+  if (last >= 0 && now.states[sc[last].cid].code === "between") return last;       // soutěž čeká na další kolo
   let i = last + 1; const nm = dayMin(Date.now());
   if (last < 0) while (i < sc.length && !sc[i].cid && hm2min(sc[i].t) != null && hm2min(sc[i].t) + (sc[i].dur || 0) <= nm) i++;   // vlastní položky na začátku, které už podle času proběhly
   return i < sc.length ? i : -1;
 }
-// První kategorie od dané položky, která ještě nezačala nebo čeká na další kolo.
+// První soutěž od dané položky, která ještě nezačala nebo čeká na další kolo.
 function nextCatItem(now, from) { const sc = sched(); for (let i = Math.max(0, from); i < sc.length; i++) { const c = sc[i].cid && now?.states?.[sc[i].cid]?.code; if (sc[i].cid && catById(sc[i].cid) && (!c || c === "wait" || c === "between")) return sc[i]; } return null; }
 function itemState(it, now) { return it.cid ? (now?.states?.[it.cid] || { code: "wait", text: "Čeká" }) : { code: "free", text: "" }; }
 function delayOf(it, now) { const st = it.cid && now?.starts?.[it.cid], p = hm2min(it.t); return st && p != null ? dayMin(st) - p : null; }
@@ -372,7 +414,20 @@ function danceChips(run) {
 // ---------- zápisy do sprava/ ----------
 const opsPath = () => `sprava/${S.comp}`;
 const wr = (p, ctx) => { try { Promise.resolve(p).catch(e => toast(ctx || "Zápis se nezdařil", errText(e))); } catch (e) { toast(ctx || "Zápis se nezdařil", errText(e)); } };
-function setPresent(n, on, who) { wr(B.set(`${opsPath()}/stav/prezence`, { p: { [n]: on ? { at: Date.now(), by: who } : DEL } }), "Docházka se neuložila"); }
+function setPresent(key, on, who) { wr(B.set(`${opsPath()}/stav/prezence`, { p: { [key]: on ? { at: Date.now(), by: who } : DEL } }), "Docházka se neuložila"); }
+// Uložení hlášení: hned po zápisu do telefonu se vrátí; ok() = server potvrdil, slow() = zatím bez signálu.
+function sendTask(id, data, ok, slow) {
+  let done = false, t = setTimeout(() => { if (!done) slow?.(); }, 2500);
+  try { Promise.resolve(B.set(`${opsPath()}/tasks/${id}`, data)).then(() => { done = true; clearTimeout(t); ok?.(); }, e => { done = true; clearTimeout(t); toast("Hlášení se neuložilo", errText(e)); }); }
+  catch (e) { clearTimeout(t); toast("Hlášení se neuložilo", errText(e)); }
+}
+// Stav hlášení srozumitelně pro autora i ostatní.
+function taskStatus(t) {
+  if (t._pending) return { cls: "wait", text: "V telefonu · odešle se, až bude signál" };
+  if (t.status === "done") return { cls: "ok", text: `Vyřešeno ${fmtTime(t.doneAt)}${t.doneBy ? " · " + t.doneBy : ""}` };
+  if (t.status === "wip") return { cls: "ok", text: `Řeší ${t.taker || "?"}` };
+  return { cls: "blue", text: "Doručeno · čeká na převzetí" };
+}
 function saveTask(id, data) { wr(B.set(`${opsPath()}/tasks/${id}`, data), "Úkol se neuložil"); }
 
 function toast(title, msg = "", kind = "bad") {
@@ -381,7 +436,7 @@ function toast(title, msg = "", kind = "bad") {
   $("toasts").appendChild(el); setTimeout(() => el.remove(), kind === "ok" ? 3500 : 9000);
 }
 let audioCtx = null;
-addEventListener("pointerdown", () => { try { audioCtx ||= new (window.AudioContext || window.webkitAudioContext)(); } catch {} }, { once: true });
+addEventListener("pointerdown", () => { try { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }, { once: true });
 function chime(urgent) {
   if (!audioCtx) return;
   try { const t = audioCtx.currentTime; (urgent ? [880, 660, 880] : [784, 1175]).forEach((f, i) => { const o = audioCtx.createOscillator(), g = audioCtx.createGain();
@@ -389,16 +444,20 @@ function chime(urgent) {
     o.connect(g).connect(audioCtx.destination); o.start(t + i * .16); o.stop(t + i * .16 + .32); }); } catch {}
 }
 
-// ---------- ukázková soutěž ----------
+// ---------- ukázková akce ----------
 function demoSeed() {
   const now = Date.now(), M = 60000, t0 = now - 55 * M, d = {};
   const first = ["Adam","Barbora","Cyril","Dana","Emil","Filip","Gabriela","Hana","Ivo","Jana","Karel","Lenka","Marek","Nela","Ondřej","Pavla","Radek","Soňa"];
   const last = ["Novák","Svobodová","Dvořák","Černá","Procházka","Kučerová","Veselý","Horáková","Němec","Marková","Pokorný","Králová"];
   const names = {}; for (let n = 1; n <= 36; n++) names[n] = `${first[(n * 5) % 18]} ${last[(n * 7) % 12]} – ${first[(n * 5 + 9) % 18]} ${last[(n * 7 + 5) % 12]}`;
+  const nm = ns => Object.fromEntries(ns.map(n => [String(n), names[n]]));
   const rng = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i), J = ["A","B","C","D","E"];
-  d["competitions/ukazka"] = { name: "Artimo Open Cup (ukázka)", createdAt: t0 - 3600 * 1000, startedAt: t0, finishedAt: null, jury: { A:"Porotce A", B:"Porotce B", C:"Porotce C", D:"Porotce D", E:"Porotce E" }, names, test: true };
+  d["competitions/ukazka"] = { name: "Artimo Open Cup (ukázka)", createdAt: t0 - 3600 * 1000, startedAt: t0, finishedAt: null, jury: { A:"Porotce A", B:"Porotce B", C:"Porotce C", D:"Porotce D", E:"Porotce E" }, test: true, withdrawn: { c2: { "17": { at: now - 2 * M, round: "r3" } } } };
   const cats = [["c1","Děti I · STT",["W","Q"],rng(1,8)],["c2","Děti II · LAT",["S","C","J"],rng(9,20)],["c3","Junioři · STT",["W","T","Q"],rng(21,30)],["c4","Mládež · LAT",["S","C","R","J"],rng(25,36)],["c5","Dospělí · Polka",["K"],rng(31,36)]];
-  cats.forEach(([id, name, dances, couples], i) => d[`competitions/ukazka/categories/${id}`] = { name, dances, couples, judges: J, key: [6], groups: 1, order: i, created: t0 - 1000 + i });
+  cats.forEach(([id, name, dances, couples], i) => d[`competitions/ukazka/categories/${id}`] = { name, dances, couples, names: nm(couples), judges: J, key: [6], groups: 1, order: i, created: t0 - 1000 + i });
+  // číslo 1 v soutěži Dospělí patří jinému páru než číslo 1 v Dětech I (čísla platí jen v rámci soutěže)
+  d["competitions/ukazka/categories/c5"].couples = [1, 31, 32, 33, 34, 35, 36];
+  d["competitions/ukazka/categories/c5"].names["1"] = "Tomáš Beneš – Alena Benešová";
   const acksAll = ds => Object.fromEntries(ds.flatMap(x => J.map(j => [`${x}_${j}`, 1])));
   d["competitions/ukazka/rounds/r1"] = { categoryId:"c1", category:"Děti I · STT", label:"1. kolo", type:"prelim", dances:["W","Q"], couples:rng(1,8), judges:J, required:6, status:"evaluated", created:t0+11*M, qualified:[1,2,3,5,6,8], acks:acksAll(["W","Q"]) };
   d["competitions/ukazka/rounds/r2"] = { categoryId:"c1", category:"Děti I · STT", label:"Finále", type:"final", dances:["W","Q"], couples:[1,2,3,5,6,8], judges:J, status:"evaluated", created:t0+30*M, acks:acksAll(["W","Q"]) };
@@ -408,10 +467,10 @@ function demoSeed() {
     { id:"s0", t:hm(t0), title:"Zahájení a nástup", cid:null, dur:10 }, { id:"s1", t:hm(t0+10*M), title:"", cid:"c1", dur:35 }, { id:"s2", t:hm(t0+45*M), title:"", cid:"c2", dur:40 },
     { id:"s3", t:hm(t0+85*M), title:"Přestávka", cid:null, dur:15 }, { id:"s4", t:hm(t0+100*M), title:"", cid:"c3", dur:35 }, { id:"s5", t:hm(t0+135*M), title:"", cid:"c4", dur:40 },
     { id:"s6", t:hm(t0+175*M), title:"", cid:"c5", dur:15 }, { id:"s7", t:hm(t0+190*M), title:"Vyhlášení výsledků", cid:null, dur:20 } ] };
-  const p = {}; [...rng(1,13), 15, 16, 18, 19, 20, 21, 22, 23, 25, 26, 28, 31, 33].forEach((n, i) => p[n] = { at: t0 - 20 * M + i * 50000, by: "Petra" });
+  const p = {}; [...rng(1,13), 15, 16, 18, 19, 20, 21, 22, 23, 25, 26, 28, 31, 33].forEach((n, i) => p[pkOf(n, names[n])] = { at: t0 - 20 * M + i * 50000, by: "Petra" });
   d["sprava/ukazka/stav/prezence"] = { p };
-  d["sprava/ukazka/tasks/t1"] = { type:"health", urgent:true, text:"Tanečnici z páru 17 je nevolno, sedí u šatny B.", n:17, status:"new", by:"Petra", byId:"demo1", at:now-3*M };
-  d["sprava/ukazka/tasks/t2"] = { type:"tech", urgent:false, text:"Nefunguje bezdrátový mikrofon u parketu.", n:null, status:"wip", by:"Tomáš", byId:"demo2", at:now-25*M, taker:"Vedoucí", takenAt:now-22*M };
+  d["sprava/ukazka/tasks/t1"] = { type:"health", urgent:true, tags:["Nevolnost"], text:"Nevolnost – sedí u šatny B", n:17, status:"new", by:"Petra", byId:"demo1", post:"Šatny", at:now-3*M };
+  d["sprava/ukazka/tasks/t2"] = { type:"tech", urgent:false, tags:["Mikrofon"], text:"Mikrofon – bezdrátový u parketu nefunguje", n:null, status:"wip", by:"Tomáš", byId:"demo2", post:"Parket", at:now-25*M, taker:"Vedoucí", takenAt:now-22*M };
   d["sprava/ukazka/tasks/t3"] = { type:"org", urgent:false, text:"Doplnit vodu na stůl poroty.", n:null, status:"done", by:"Vedoucí", byId:"v", at:now-60*M, taker:"Tomáš", takenAt:now-58*M, doneAt:now-50*M, doneBy:"Tomáš" };
   d["sprava/ukazka/helpers/demo1"] = { name:"Petra", post:"Prezence · vchod", beat:now-40000, ver:VERSION };
   d["sprava/ukazka/helpers/demo2"] = { name:"Tomáš", post:"Parket", beat:now-9*M, ver:VERSION };
@@ -429,8 +488,8 @@ function demoStep() {
   const mk = (c, type, couples) => Demo.set(P + newId(), { categoryId: c.id, category: c.name, label: type === "final" ? "Finále" : "1. kolo", type, dances: c.dances, couples, judges: c.judges, ...(type === "prelim" ? { required: Math.min(6, couples.length - 1) } : {}), status: "open", created: Date.now(), acks: {} }, true);
   for (const c of cats) { const cr = rs.filter(r => r.categoryId === c.id); if (!cr.length) continue; const l = cr[cr.length - 1]; if (l.type !== "final") return mk(c, "final", l.qualified || l.couples.slice(0, 6)), `Spuštěno finále ${c.name}`; }
   const nx = cats.find(c => !rs.some(r => r.categoryId === c.id));
-  if (nx) return mk(nx, nx.couples.length > 7 ? "prelim" : "final", nx.couples), `Spuštěna kategorie ${nx.name}`;
-  return "Soutěž je dotančená";
+  if (nx) return mk(nx, nx.couples.length > 7 ? "prelim" : "final", nx.couples), `Spuštěna soutěž ${nx.name}`;
+  return "Akce je dotančená";
 }
 
 // ===================== VEDOUCÍ =====================
@@ -480,9 +539,19 @@ function startComp(id) {
     S.helpers = l; render(); }, oErr));
 }
 function onTasks(list) {
-  if (knownTasks) for (const t of list) if (!knownTasks.has(t.id) && t.status === "new" && t.by !== ME) { chime(t.urgent); toast(t.urgent ? "URGENTNÍ hlášení" : "Nové hlášení", `${TASK_TYPES[t.type] || ""}: ${t.text} (${t.by})`, t.urgent ? "bad" : "ok"); }
+  if (knownTasks) for (const t of list) if (!knownTasks.has(t.id) && t.status === "new" && t.by !== ME) { chime(t.urgent); if (!t.urgent) toast("Nové hlášení", `${TASK_TYPES[t.type] || ""}: ${t.text} (${t.by})`, "ok"); }
   knownTasks = new Set(list.map(t => t.id)); S.tasks = list;
 }
+// Urgentní hlášení, které nikdo nepřevzal: červený pruh na všech stránkách a zvuk každou minutu.
+const urgentNew = () => S.tasks.filter(t => t.urgent && t.status === "new").sort((a, b) => (a.at || 0) - (b.at || 0));
+function drawAlerts() {
+  const l = urgentNew();
+  const h = l.map(t => `<div class="alert"><b>URGENTNÍ · ${esc(TASK_TYPES[t.type] || "")}</b><span>${esc(t.text)}${t.n ? ` · číslo ${esc(t.n)}${whoIs(t.n) ? " " + esc(whoIs(t.n)) : ""}` : ""}${t.post ? ` · ${esc(t.post)}` : ""} · ${esc(t.by || "")} · ${ago(t.at)}</span><span class="sp"></span>
+    <button class="btn sm" data-act="tTake" data-id="${esc(t.id)}">Převzít</button><button class="btn sm ghost" data-act="tAssign" data-id="${esc(t.id)}">Přidělit</button></div>`).join("");
+  if ($("alerts").dataset.h !== h) { $("alerts").innerHTML = h; $("alerts").dataset.h = h; }
+  document.title = (l.length ? `(${l.length}) URGENTNÍ – ` : "") + "Artimo Manager – Vedoucí";
+}
+setInterval(() => { if (urgentNew().length) chime(true); }, 60000);
 // Souhrn pro pomocníky – zapisuje se jen při změně.
 let pubTimer = null;
 function publishNow(now) {
@@ -500,9 +569,10 @@ function draw() {
   const openTasks = S.tasks.filter(t => t.status !== "done").length;
   $("taskCnt").hidden = !openTasks; $("taskCnt").textContent = openTasks;
   let bn = "";
-  if (DEMO) bn += `<div class="banner demo"><b>Ukázkový režim.</b> Data jsou vymyšlená a zůstávají jen v tomto prohlížeči, do Firebase se nic neposílá. <span class="sp"></span><button class="btn sm blue" data-act="demoStep">Posunout soutěž o krok</button><button class="btn sm" data-act="demoReset">Obnovit ukázku</button></div>`;
+  drawAlerts();
+  if (DEMO) bn += `<div class="banner demo"><b>Ukázkový režim.</b> Data jsou vymyšlená a zůstávají jen v tomto prohlížeči, do Firebase se nic neposílá. <span class="sp"></span><button class="btn sm blue" data-act="demoStep">Posunout akci o krok</button><button class="btn sm" data-act="demoReset">Obnovit ukázku</button></div>`;
   if (S.rulesMissing) bn += `<div class="banner"><b>Docházku, úkoly a harmonogram zatím nelze ukládat.</b> Čtení dat sčitatele funguje, ale projekt <code>artimo-competition</code> zápis odmítá. Zkontrolujte jeho pravidla (Firestore → Rules) a zapnuté anonymní přihlášení.</div>`;
-  if (S.loaded.comp && !S.compDoc) bn += `<div class="banner">Soutěž s ID <b>${esc(S.comp)}</b> v databázi sčitatele není. Vyberte jinou tlačítkem Soutěž… vpravo nahoře.</div>`;
+  if (S.loaded.comp && !S.compDoc) bn += `<div class="banner">Akce s ID <b>${esc(S.comp)}</b> v databázi sčitatele není. Vyberte jinou tlačítkem Akce vpravo nahoře.</div>`;
   if ($("banner").dataset.h !== bn) { $("banner").innerHTML = bn; $("banner").dataset.h = bn; }
   if (page === "over") drawOver(now);
   if (page === "plan") drawPlan(now);
@@ -511,22 +581,22 @@ function draw() {
   publishNow(now);
 }
 const stBadge = st => st.code === "free" ? "" : `<span class="badge ${st.code}">${esc(st.text)}</span>`;
-const itemTitle = it => it.cid ? (catById(it.cid)?.name || "Kategorie (smazaná)") : (it.title || "Položka");
-const nchips = (nums, miss) => nums.map(n => `<span class="nchip ${miss ? "miss" : ""}" title="${esc(nameOf(n))}">${n}</span>`).join(" ");
+const itemTitle = it => it.cid ? (catById(it.cid)?.name || "Soutěž (smazaná)") : (it.title || "Položka");
+const nchips = (nums, miss, cid) => nums.map(n => `<span class="nchip ${miss ? "miss" : ""}" title="${esc(nameIn(cid, n))}">${n}</span>`).join(" ");
 function typeBadge(t) { return `<span class="badge type ${esc(t.type)}">${esc(TASK_TYPES[t.type] || "Jiné")}</span>${t.urgent ? ' <span class="badge urgent">Urgentní</span>' : ""}`; }
 
 function drawOver(now) {
-  const run = now.run, sc = sched(), ni = nextIndex(now), st = starters(), present = st.filter(x => S.prez[x.n]).length;
+  const run = now.run, sc = sched(), ni = nextIndex(now), st = starters(), present = st.filter(x => S.prez[x.key]).length;
   // --- právě probíhá
   let nowH;
   if (run) {
-    const noPrez = run.couples.filter(n => !S.prez[n]);
+    const noPrez = run.couples.filter(n => !isOut(run.cid, n) && !presentIn(run.cid, n));
     const cur = run.cur ? `Tančí se <b style="color:var(--text)">${esc(DANCES[run.cur])}</b>` : run.status === "open" ? "Všechny lístky jsou odevzdané" : "Kolo je uzavřené, sčitatel vyhodnocuje";
     nowH = `<div class="card pad live"><div class="kicker">Právě probíhá</div>
       <div class="head" style="margin-top:6px"><h1>${esc(run.cat)} <span class="faint">· ${esc(run.label)}</span></h1><span class="badge ${run.status}">${run.status === "open" ? "Na parketu" : "Vyhodnocuje se"}</span></div>
       <div style="margin-top:14px">${danceChips(run)}</div>
-      <div class="meta">${cur} · ${run.couples.length} párů · ${run.judges} porotců · spuštěno ${fmtTime(run.started)} (${ago(run.started)})</div>
-      ${noPrez.length ? `<div class="warn"><b>V kole jsou páry bez prezence:</b> ${nchips(noPrez, true)}</div>` : ""}
+      <div class="meta">${cur} · ${run.couples.length} startujících · ${run.judges} porotců · spuštěno ${fmtTime(run.started)} (${ago(run.started)})</div>
+      ${noPrez.length ? `<div class="warn"><b>V kole jsou startující bez prezence:</b> ${nchips(noPrez, true, run.cid)}</div>` : ""}
       <div class="hint" style="margin-top:10px">Tanec se určuje podle lístků, které sčitatel převzal od porotců.</div></div>`;
   } else {
     nowH = `<div class="card pad"><div class="kicker">Právě probíhá</div><div class="head" style="margin-top:6px"><h1 class="muted">Teď se netančí</h1></div>
@@ -539,7 +609,7 @@ function drawOver(now) {
     nextH = `<div class="card pad"><div class="kicker">Následuje</div>
       <div class="head" style="margin-top:6px"><h1 style="font-size:19px">${esc(itemTitle(it))}${btw ? ' <span class="faint">· další kolo</span>' : ""}</h1><span class="sp"></span><span class="big" style="font-size:22px">${btw ? "" : esc(it.t || "")}</span></div>
       <div class="meta">${[btw ? "čeká se na vyhodnocení a spuštění dalšího kola" : it.dur ? `plánovaná délka ${it.dur} min` : "", dl != null ? `aktuální skluz <b style="color:${dl > 5 ? "#ffb84d" : "var(--text)"}">${delayText(dl)}</b>` : ""].filter(Boolean).join(" · ")}</div>
-      ${cat ? `<div class="sec-t">${nci === it ? "Prezence kategorie" : `Nejbližší kategorie · ${esc(cat.name)} · ${esc(nci.t || "")}`}</div>` + (miss.length ? `<div class="warn" style="margin-top:0"><b>Chybí ${miss.length} z ${cat.couples.length}:</b> ${nchips(miss, true)}</div>` : `<div style="color:#5fe08a">Všech ${cat.couples.length} startujících je přítomno.</div>`) : ""}</div>`;
+      ${cat ? `<div class="sec-t">${nci === it ? "Prezence soutěže" : `Nejbližší soutěž · ${esc(cat.name)} · ${esc(nci.t || "")}`}</div>` + (miss.length ? `<div class="warn" style="margin-top:0"><b>Chybí ${miss.length} z ${activeOf(cat).length}:</b> ${nchips(miss, true, cat.id)}</div>` : `<div style="color:#5fe08a">Všech ${activeOf(cat).length} startujících je přítomno.</div>`) : ""}</div>`;
   }
   // --- harmonogram
   const schedH = `<div class="card pad"><div class="head"><h2>Harmonogram</h2><div class="sp"></div><button class="btn sm plain" data-act="goPlan">Upravit</button></div>
@@ -552,11 +622,11 @@ function drawOver(now) {
   const prezH = `<div class="card pad"><div class="head"><h2>Docházka</h2><div class="sp"></div><button class="btn sm plain" data-act="goList">Seznam</button></div>
     <div class="big" style="margin-top:10px">${present} <small>/ ${st.length} přítomno</small></div>
     <div class="bar" style="margin:10px 0 12px"><i style="width:${st.length ? Math.round(present / st.length * 100) : 0}%"></i></div>
-    ${cats.map(c => { const n = (c.couples || []).length, m = missingOf(c).length; return `<div class="srow" style="padding:6px 0"><span class="tt">${esc(c.name)}</span><span class="${m ? "muted" : ""}" style="${m ? "" : "color:#5fe08a"}">${n - m} / ${n}</span></div>`; }).join("") || `<div class="muted">Sčitatel zatím nezaložil žádnou kategorii.</div>`}</div>`;
+    ${cats.map(c => { const n = activeOf(c).length, m = missingOf(c).length; return `<div class="srow" style="padding:6px 0"><span class="tt">${esc(c.name)}</span><span class="${m ? "muted" : ""}" style="${m ? "" : "color:#5fe08a"}">${n - m} / ${n}</span></div>`; }).join("") || `<div class="muted">Sčitatel zatím nezaložil žádnou soutěž.</div>`}</div>`;
   // --- úkoly
   const open = S.tasks.filter(t => t.status !== "done").sort((a, b) => (b.urgent ? 1 : 0) - (a.urgent ? 1 : 0) || (b.at || 0) - (a.at || 0));
   const tasksH = `<div class="card pad"><div class="head"><h2>Otevřené úkoly</h2><span class="muted">${open.length}</span><div class="sp"></div><button class="btn sm" data-act="newTask">Nový</button></div>
-    <div style="margin-top:6px">${open.slice(0, 5).map(t => `<div class="trow" data-act="goTasks">${typeBadge(t)} <span class="faint" style="float:right">${fmtTime(t.at)}</span><p>${esc(t.text)}</p><span class="faint">${esc(t.by || "")}${t.taker ? ` · řeší ${esc(t.taker)}` : " · nikdo neřeší"}</span></div>`).join("") || `<div class="muted" style="padding:10px 0">Žádné otevřené úkoly.</div>`}</div></div>`;
+    <div style="margin-top:6px">${open.slice(0, 5).map(t => `<div class="trow" data-act="goTasks">${typeBadge(t)} <span class="faint" style="float:right">${fmtTime(t.at)}</span><p>${esc(t.text)}${t.n ? ` · číslo ${esc(t.n)}` : ""}</p><span class="faint">${t.post ? esc(t.post) + " · " : ""}${esc(t.by || "")}${t._pending ? " · čeká na signál" : t.taker ? ` · řeší ${esc(t.taker)}` : " · nikdo neřeší"}</span></div>`).join("") || `<div class="muted" style="padding:10px 0">Žádné otevřené úkoly.</div>`}</div></div>`;
   // --- pomocníci
   const helpH = `<div class="card pad"><div class="head"><h2>Pomocníci</h2><div class="sp"></div><button class="btn sm" data-act="helperLink">Odkaz a QR</button></div>
     <div style="margin-top:6px">${S.helpers.sort((a, b) => (a.name || "").localeCompare(b.name || "", "cs")).map(h => { const at = heard.get(h.id)?.at || 0, age = Date.now() - at;
@@ -566,8 +636,8 @@ function drawOver(now) {
 
 function drawPlan(now) {
   const sc = sched(), ni = nextIndex(now);
-  $("page-plan").innerHTML = `<div class="card pad"><div class="head"><h2>Harmonogram soutěže</h2><span class="muted">${sc.length} položek</span><div class="sp"></div>
-      <button class="btn sm" data-act="planSort">Seřadit podle času</button><button class="btn sm" data-act="planGen">Vygenerovat z kategorií…</button><button class="btn sm primary" data-act="planAdd">Přidat položku</button></div>
+  $("page-plan").innerHTML = `<div class="card pad"><div class="head"><h2>Harmonogram akce</h2><span class="muted">${sc.length} položek</span><div class="sp"></div>
+      <button class="btn sm" data-act="planSort">Seřadit podle času</button><button class="btn sm" data-act="planGen">Vygenerovat ze soutěží</button><button class="btn sm primary" data-act="planAdd">Přidat položku</button></div>
     ${sc.length ? `<table class="tbl" style="margin-top:12px"><tr><th>Plán</th><th>Položka</th><th>Délka</th><th>Stav</th><th>Skutečný začátek</th><th>Skluz</th><th></th></tr>
       ${sc.map((it, i) => { const s = itemState(it, now), d = delayOf(it, now), cat = it.cid && catById(it.cid);
         const cls = s.code === "open" || s.code === "locked" ? "cur" : i === ni ? "next" : s.code === "done" ? "past" : "";
@@ -576,15 +646,15 @@ function drawPlan(now) {
           <td style="color:${d > 5 ? "#ffb84d" : "inherit"}">${delayText(d) || "–"}</td>
           <td style="text-align:right;white-space:nowrap"><button class="btn sm icon" data-act="planUp" data-i="${i}" ${i ? "" : "disabled"}>↑</button> <button class="btn sm icon" data-act="planDown" data-i="${i}" ${i < sc.length - 1 ? "" : "disabled"}>↓</button> <button class="btn sm" data-act="planEdit" data-i="${i}">Upravit</button> <button class="btn sm danger" data-act="planDel" data-i="${i}">Smazat</button></td></tr>`; }).join("")}</table>
       <div class="hint" style="margin-top:12px">Stav a skutečný začátek se berou z kol, která spouští sčitatel. Harmonogram se ukládá odděleně a sčitatelskou aplikaci neovlivňuje.</div>`
-      : `<div class="empty">Harmonogram je prázdný.<br>Vygenerujte ho z kategorií sčitatele, nebo přidejte položky ručně.</div>`}</div>`;
+      : `<div class="empty">Harmonogram je prázdný.<br>Vygenerujte ho ze soutěží ve Sčitateli, nebo přidejte položky ručně.</div>`}</div>`;
 }
 const saveSched = arr => wr(B.set(opsPath(), { schedule: arr }), "Harmonogram se neuložil");
 function planItemModal(i) {
   const sc = sched(), it = i != null ? sc[i] : { id: newId(), t: sc.length ? min2hm((hm2min(sc[sc.length - 1].t) ?? 540) + (sc[sc.length - 1].dur || 0)) : "09:00", title: "", cid: catsSorted().find(c => !sc.some(x => x.cid === c.id))?.id || null, dur: 30 };
   let kind = it.cid ? "cat" : "free";
   modal(i != null ? "Upravit položku" : "Nová položka", `
-    <div class="seg" id="mKind"><button data-k="cat" class="${kind === "cat" ? "on" : ""}">Kategorie sčitatele</button><button data-k="free" class="${kind === "free" ? "on" : ""}">Vlastní položka</button></div>
-    <div id="mCatW"><label class="lbl">Kategorie</label><select class="in" id="mCat">${catsSorted().map(c => `<option value="${esc(c.id)}" ${c.id === it.cid ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
+    <div class="seg" id="mKind"><button data-k="cat" class="${kind === "cat" ? "on" : ""}">Soutěž ze Sčitatele</button><button data-k="free" class="${kind === "free" ? "on" : ""}">Vlastní položka</button></div>
+    <div id="mCatW"><label class="lbl">Soutěž</label><select class="in" id="mCat">${catsSorted().map(c => `<option value="${esc(c.id)}" ${c.id === it.cid ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
     <div id="mTitleW"><label class="lbl">Název</label><input class="in" id="mTitle" value="${esc(it.title)}" placeholder="např. Přestávka, Vyhlášení výsledků"></div>
     <div class="row" style="align-items:flex-start"><div class="grow"><label class="lbl">Plánovaný začátek</label><input class="in" type="time" id="mT" value="${esc(it.t || "")}"></div>
     <div class="grow"><label class="lbl">Délka (min)</label><input class="in" type="number" min="0" max="600" id="mDur" value="${it.dur ?? ""}"></div></div>`,
@@ -592,64 +662,74 @@ function planItemModal(i) {
       const q = s => r.querySelector(s), t = q("#mT").value, dur = parseInt(q("#mDur").value, 10) || 0;
       if (hm2min(t) == null) throw new Error("Zadejte plánovaný začátek.");
       const n = { id: it.id, t, dur, cid: kind === "cat" ? q("#mCat").value || null : null, title: kind === "free" ? q("#mTitle").value.trim() : "" };
-      if (kind === "cat" && !n.cid) throw new Error("Sčitatel zatím nemá žádnou kategorii.");
+      if (kind === "cat" && !n.cid) throw new Error("Sčitatel zatím nemá žádnou soutěž.");
       if (kind === "free" && !n.title) throw new Error("Zadejte název položky.");
       const arr = [...sched()]; if (i != null) arr[i] = n; else arr.push(n); saveSched(arr);
     } }], r => { const sync = () => { r.querySelector("#mCatW").classList.toggle("hidden", kind !== "cat"); r.querySelector("#mTitleW").classList.toggle("hidden", kind !== "free"); r.querySelectorAll("#mKind button").forEach(b => b.classList.toggle("on", b.dataset.k === kind)); };
       r.querySelectorAll("#mKind button").forEach(b => b.onclick = () => { kind = b.dataset.k; sync(); }); sync(); });
 }
 function planGenModal() {
-  const cats = catsSorted(); if (!cats.length) return toast("Nelze vygenerovat", "Sčitatel zatím nezaložil žádnou kategorii.");
-  modal("Vygenerovat harmonogram", `<p class="hint" style="margin-top:0">Vytvoří položku pro každou z ${cats.length} kategorií v pořadí ze sčitatele. ${sched().length ? "<b>Stávající harmonogram se nahradí.</b>" : ""}</p>
-    <div class="row" style="align-items:flex-start"><div class="grow"><label class="lbl">Začátek první kategorie</label><input class="in" type="time" id="gT" value="09:00"></div>
+  const cats = catsSorted(); if (!cats.length) return toast("Nelze vygenerovat", "Sčitatel zatím nezaložil žádnou soutěž.");
+  modal("Vygenerovat harmonogram", `<p class="hint" style="margin-top:0">Vytvoří položku pro každou z ${cats.length} soutěží v pořadí ze Správy soutěží. ${sched().length ? "<b>Stávající harmonogram se nahradí.</b>" : ""}</p>
+    <div class="row" style="align-items:flex-start"><div class="grow"><label class="lbl">Začátek první soutěže</label><input class="in" type="time" id="gT" value="09:00"></div>
     <div class="grow"><label class="lbl">Minut na jedno kolo a tanec</label><input class="in" type="number" id="gM" min="1" max="20" value="3"></div></div>
-    <div class="hint">Délka kategorie = počet tanců × odhad kol × minuty + 5 min rezerva. Časy pak můžete upravit.</div>`,
+    <div class="hint">Délka soutěže = počet tanců × odhad kol × minuty + 5 min rezerva. Časy pak můžete upravit.</div>`,
     [{ label: "Zrušit" }, { label: "Vygenerovat", cls: "primary", action: r => {
       let t = hm2min(r.querySelector("#gT").value); const m = parseInt(r.querySelector("#gM").value, 10) || 3; if (t == null) throw new Error("Zadejte začátek.");
-      saveSched(cats.map(c => { const n = (c.couples || []).length, rounds = Array.isArray(c.key) && c.key.length ? c.key.length + 1 : n > 12 ? 3 : n > 6 ? 2 : 1;
+      saveSched(cats.map(c => { const n = couplesOf(c).length, rounds = Array.isArray(c.key) && c.key.length ? c.key.length + 1 : n > 12 ? 3 : n > 6 ? 2 : 1;
         const dur = Math.ceil(((c.dances || []).length * rounds * m + 5) / 5) * 5, it = { id: newId(), t: min2hm(t), cid: c.id, title: "", dur }; t += dur; return it; }));
     } }]);
 }
 
 function drawList(now) {
-  const sel = $("listCat"), opts = `<option value="">Všechny kategorie</option>` + catsSorted().map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+  const sel = $("listCat"), opts = `<option value="">Všechny soutěže</option>` + catsSorted().map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
   if (sel.dataset.h !== opts) { const v = sel.value; sel.innerHTML = opts; sel.dataset.h = opts; sel.value = v; }
   const q = norm($("listQ").value.trim()), cid = sel.value, all = starters(), floor = new Set(now.run?.status === "open" ? now.run.couples : []);
   const out = (n, c) => roundsOf(c.id).some(r => r.type === "prelim" && r.status === "evaluated" && Array.isArray(r.qualified) && (r.couples || []).includes(n) && !r.qualified.includes(n));
-  const rows = all.filter(x => (!cid || x.cats.some(c => c.id === cid)) && (listF === "all" || (listF === "in") === !!S.prez[x.n]) && matchQ(x, q));
-  $("listCnt").textContent = `${all.filter(x => S.prez[x.n]).length} z ${all.length} přítomno · zobrazeno ${rows.length}`;
-  $("listBody").innerHTML = rows.length ? `<table class="tbl"><tr><th>Číslo</th><th>Jméno</th><th>Kategorie</th><th>Docházka</th><th></th></tr>${rows.map(x => { const p = S.prez[x.n];
+  const rows = all.filter(x => (!cid || x.cats.some(c => c.id === cid)) && (listF === "all" || (listF === "in") === !!S.prez[x.key]) && matchQ(x, q));
+  $("listCnt").textContent = `${all.filter(x => S.prez[x.key]).length} z ${all.length} přítomno · zobrazeno ${rows.length}`;
+  $("listBody").innerHTML = rows.length ? `<table class="tbl"><tr><th>Číslo</th><th>Jméno</th><th>Soutěže</th><th>Docházka</th><th></th></tr>${rows.map(x => { const p = S.prez[x.key];
     return `<tr class="${p ? "" : "absent"}"><td class="num">${x.n}</td><td class="nm">${esc(x.name) || '<span class="faint">bez jména</span>'}</td>
-      <td>${x.cats.map(c => `<span class="catchip ${floor.has(x.n) && now.run.cid === c.id ? "floor" : out(x.n, c) ? "out" : ""}" title="${floor.has(x.n) && now.run.cid === c.id ? "právě na parketu" : out(x.n, c) ? "vyřazen" : ""}">${esc(c.name)}</span>`).join("")}</td>
+      <td>${x.cats.map(c => { const fl = floor.has(x.n) && now.run.cid === c.id, wd = x.out.has(c.id), ex = !wd && out(x.n, c);
+        return `<span class="catchip ${fl ? "floor" : wd || ex ? "out" : ""}" title="${fl ? "právě na parketu" : wd ? "odstoupil" : ex ? "vyřazen" : ""}">${esc(c.name)}${wd ? " · odstoupil" : ""}</span>`; }).join("")}</td>
       <td>${p ? `<span style="color:#5fe08a">Přítomen</span> <span class="faint">· ${fmtTime(p.at)} · ${esc(p.by || "")}</span>` : `<span class="muted">Chybí</span>`}</td>
-      <td style="text-align:right"><button class="btn sm ${p ? "" : "primary"}" data-act="prez" data-n="${x.n}">${p ? "Zrušit" : "Označit přítomnost"}</button></td></tr>`; }).join("")}</table>`
-    : `<div class="empty">${all.length ? "Filtru neodpovídá žádný startující." : "Startovní listina je prázdná. Vzniká z kategorií a seznamu soutěžících ve sčitatelské aplikaci."}</div>`;
+      <td style="text-align:right"><button class="btn sm ${p ? "" : "primary"}" data-act="prez" data-k="${esc(x.key)}">${p ? "Zrušit" : "Označit přítomnost"}</button></td></tr>`; }).join("")}</table>`
+    : `<div class="empty">${all.length ? "Filtru neodpovídá žádný startující." : "Startovní listina je prázdná. Vzniká ve Správě soutěží ve Sčitateli."}</div>`;
 }
 
 function drawTasks() {
   const col = (st, title) => { const l = S.tasks.filter(t => (t.status || "new") === st).sort((a, b) => st === "done" ? (b.doneAt || 0) - (a.doneAt || 0) : (b.urgent ? 1 : 0) - (a.urgent ? 1 : 0) || (a.at || 0) - (b.at || 0));
     return `<div class="kcol"><h3>${title} <span class="faint">${l.length}</span></h3>${l.map(t => `<div class="tcard ${t.urgent && st !== "done" ? "urgent" : ""} ${st}">
       <div class="row">${typeBadge(t)}<span class="sp"></span><span class="faint">${fmtTime(t.at)}</span></div><p>${esc(t.text)}</p>
-      <div class="who">${t.n ? `Pár <b>${esc(t.n)}</b> ${esc(nameOf(t.n))}<br>` : ""}Nahlásil: ${esc(t.by || "?")}${t.taker ? ` · řeší: <b>${esc(t.taker)}</b>` : ""}${t.doneAt ? ` · hotovo ${fmtTime(t.doneAt)} (${esc(t.doneBy || "")})` : ""}</div>
-      <div class="acts">${st === "new" ? `<button class="btn sm primary" data-act="tTake" data-id="${esc(t.id)}">Převzít</button><button class="btn sm" data-act="tAssign" data-id="${esc(t.id)}">Přidělit…</button><button class="btn sm" data-act="tDone" data-id="${esc(t.id)}">Hotovo</button>`
-        : st === "wip" ? `<button class="btn sm primary" data-act="tDone" data-id="${esc(t.id)}">Hotovo</button><button class="btn sm" data-act="tAssign" data-id="${esc(t.id)}">Přidělit…</button><button class="btn sm" data-act="tBack" data-id="${esc(t.id)}">Vrátit</button>`
+      <div class="who">${t.n ? `Číslo <b>${esc(t.n)}</b> ${esc(whoIs(t.n))}<br>` : ""}${t.post ? `<span class="place">Místo: ${esc(t.post)}</span><br>` : ""}Nahlásil: ${esc(t.by || "?")}${t._pending ? " · čeká na signál" : ""}${t.taker ? ` · řeší: <b>${esc(t.taker)}</b>` : ""}${t.doneAt ? ` · hotovo ${fmtTime(t.doneAt)} (${esc(t.doneBy || "")})` : ""}</div>
+      <div class="acts">${st === "new" ? `<button class="btn sm primary" data-act="tTake" data-id="${esc(t.id)}">Převzít</button><button class="btn sm" data-act="tAssign" data-id="${esc(t.id)}">Přidělit</button><button class="btn sm" data-act="tDone" data-id="${esc(t.id)}">Hotovo</button>`
+        : st === "wip" ? `<button class="btn sm primary" data-act="tDone" data-id="${esc(t.id)}">Hotovo</button><button class="btn sm" data-act="tAssign" data-id="${esc(t.id)}">Přidělit</button><button class="btn sm" data-act="tBack" data-id="${esc(t.id)}">Vrátit</button>`
         : `<button class="btn sm" data-act="tBack" data-id="${esc(t.id)}">Znovu otevřít</button><button class="btn sm danger" data-act="tDel" data-id="${esc(t.id)}">Smazat</button>`}</div></div>`).join("") || `<div class="muted" style="padding:14px 4px">Nic.</div>`}</div>`; };
   $("page-tasks").innerHTML = `<div class="head" style="margin-bottom:14px"><h1 style="font-size:20px">Úkoly a hlášení</h1><div class="sp"></div><button class="btn primary" data-act="newTask">Nový úkol</button></div>
     <div class="kan">${col("new", "Nové")}${col("wip", "Řeší se")}${col("done", "Hotovo")}</div>`;
 }
 const helperOpts = sel => `<option value="">Nikdo (čeká na převzetí)</option><option ${sel === ME ? "selected" : ""}>${ME}</option>` + S.helpers.map(h => `<option ${sel === h.name ? "selected" : ""}>${esc(h.name)}</option>`).join("");
 function newTaskModal() {
-  let type = "org";
+  let type = "org"; const tags = new Set();
   modal("Nový úkol", `<div class="chips" id="tType">${Object.entries(TASK_TYPES).map(([k, v]) => `<button class="chip ${k === type ? "on" : ""}" data-k="${k}">${v}</button>`).join("")}</div>
-    <label class="lbl">Popis</label><textarea class="in" id="tText" rows="3" placeholder="Co je potřeba udělat"></textarea>
-    <div class="row" style="align-items:flex-start"><div class="grow"><label class="lbl">Číslo páru (nepovinné)</label><input class="in" id="tN" inputmode="numeric"></div>
+    <div class="qchips" id="tTags"></div>
+    <label class="lbl">Poznámka (nepovinné)</label><input class="in" id="tText" placeholder="Co je potřeba udělat">
+    <div class="row" style="align-items:flex-start"><div class="grow"><label class="lbl">Číslo startujícího (nepovinné)</label><input class="in" id="tN" inputmode="numeric"></div>
+    <div class="grow"><label class="lbl">Kde</label><input class="in" id="tPost"></div></div>
+    <div class="row" style="align-items:flex-start">
     <div class="grow"><label class="lbl">Přidělit</label><select class="in" id="tWho">${helperOpts("")}</select></div></div>
     <label class="row" style="margin-top:12px;cursor:pointer"><span class="switch"><input type="checkbox" id="tUrg"><span></span></span> Urgentní</label>`,
     [{ label: "Zrušit" }, { label: "Vytvořit", cls: "primary", action: r => {
-      const text = r.querySelector("#tText").value.trim(); if (!text) throw new Error("Napište popis úkolu.");
+      const tg = [...tags], note = r.querySelector("#tText").value.slice(0, 300);
+      if (!tg.length && !note.trim()) throw new Error("Klepněte na některou frázi, nebo napište poznámku.");
       const who = r.querySelector("#tWho").value, n = parseInt(r.querySelector("#tN").value, 10) || null;
-      saveTask(newId(), { type, urgent: r.querySelector("#tUrg").checked, text, n, status: who ? "wip" : "new", by: ME, byId: deviceId, at: Date.now(), ...(who ? { taker: who, takenAt: Date.now() } : {}) });
-    } }], r => r.querySelectorAll("#tType .chip").forEach(b => b.onclick = () => { type = b.dataset.k; r.querySelectorAll("#tType .chip").forEach(x => x.classList.toggle("on", x === b)); }));
+      saveTask(newId(), { type, urgent: r.querySelector("#tUrg").checked, tags: tg, text: composeText(type, tg, note), n, post: r.querySelector("#tPost").value.trim().slice(0, 40), status: who ? "wip" : "new", by: ME, byId: deviceId, at: Date.now(), ...(who ? { taker: who, takenAt: Date.now() } : {}) });
+    } }], r => {
+      const drawTags = () => { r.querySelector("#tTags").innerHTML = QUICK[type].map(q => `<button class="qchip ${tags.has(q) ? "on" : ""}" data-q="${esc(q)}">${esc(q)}</button>`).join(""); };
+      r.querySelectorAll("#tType .chip").forEach(b => b.onclick = () => { type = b.dataset.k; tags.clear(); r.querySelector("#tUrg").checked = type === "health"; r.querySelectorAll("#tType .chip").forEach(x => x.classList.toggle("on", x === b)); drawTags(); });
+      r.querySelector("#tTags").onclick = e => { const b = e.target.closest("[data-q]"); if (!b) return; const v = b.dataset.q; if (tags.has(v)) tags.delete(v); else { tags.add(v); if (URGENT_TAGS.includes(v)) r.querySelector("#tUrg").checked = true; } drawTags(); };
+      drawTags();
+    });
 }
 function assignModal(id) {
   const t = S.tasks.find(x => x.id === id); if (!t) return;
@@ -668,10 +748,10 @@ async function helperLinkModal() {
     });
 }
 async function compModal() {
-  let list = []; try { list = await B.getCol("competitions"); } catch (e) { return toast("Seznam soutěží se nenačetl", errText(e)); }
+  let list = []; try { list = await B.getCol("competitions"); } catch (e) { return toast("Seznam akcí se nenačetl", errText(e)); }
   list.sort((a, b) => (b.startedAt || b.createdAt || 0) - (a.startedAt || a.createdAt || 0));
-  modal("Soutěž", `<p class="hint" style="margin-top:0">Soutěže zakládá sčitatel. Zde se jen vybírá, kterou sledovat.</p>
-    <div>${list.map(c => `<div class="mrow ${c.id === S.comp ? "cur" : ""}" data-c="${esc(c.id)}"><div class="grow"><b>${esc(c.name || c.id)}</b><small>${esc(c.id)}${c.test ? " · zkušební" : ""}</small></div><span class="badge ${c.finishedAt ? "done" : c.startedAt ? "open" : "wait"}">${c.finishedAt ? "Ukončená" : c.startedAt ? "Probíhá" : "Připravená"}</span></div>`).join("") || `<div class="muted">V databázi není žádná soutěž.</div>`}</div>`,
+  modal("Akce", `<p class="hint" style="margin-top:0">Akce zakládá Sčitatel. Tady se jen vybírá, kterou sledovat.</p>
+    <div>${list.map(c => `<div class="mrow ${c.id === S.comp ? "cur" : ""}" data-c="${esc(c.id)}"><div class="grow"><b>${esc(c.name || c.id)}</b><small>${esc(c.id)}${c.test ? " · zkušební" : ""}</small></div><span class="badge ${c.finishedAt ? "done" : c.startedAt ? "open" : "wait"}">${c.finishedAt ? "Ukončená" : c.startedAt ? "Probíhá" : "Připravená"}</span></div>`).join("") || `<div class="muted">V databázi není žádná akce.</div>`}</div>`,
     [{ label: "Zavřít" }], r => r.querySelectorAll("[data-c]").forEach(el => el.onclick = () => { $("modalRoot").close(); startComp(el.dataset.c); }));
 }
 
@@ -693,7 +773,8 @@ document.addEventListener("click", async e => {
   if (a === "planUp" && i > 0) { [sc[i - 1], sc[i]] = [sc[i], sc[i - 1]]; return saveSched(sc); }
   if (a === "planDown" && i < sc.length - 1) { [sc[i + 1], sc[i]] = [sc[i], sc[i + 1]]; return saveSched(sc); }
   if (a === "planDel") { if (await confirmBox(`Smazat položku <b>${esc(itemTitle(sc[i]))}</b> z harmonogramu?`, "Smazat", "danger")) { const arr = sched().filter(x => x.id !== sc[i].id); saveSched(arr); } return; }
-  if (a === "prez") { const n = +el.dataset.n; if (S.prez[n] && !await confirmBox(`Zrušit přítomnost čísla <b>${n}</b> ${esc(nameOf(n))}?`, "Zrušit přítomnost", "danger")) return; return setPresent(n, !S.prez[n], ME); }
+  if (a === "prez") { const k = el.dataset.k, x = starters().find(s => s.key === k); if (!x) return;
+    if (S.prez[k] && !await confirmBox(`Zrušit přítomnost čísla <b>${x.n}</b> ${esc(x.name)}?`, "Zrušit přítomnost", "danger")) return; return setPresent(k, !S.prez[k], ME); }
   if (a === "tTake") return saveTask(id, { status: "wip", taker: ME, takenAt: Date.now() });
   if (a === "tDone") return saveTask(id, { status: "done", doneAt: Date.now(), doneBy: ME });
   if (a === "tBack") return saveTask(id, { status: "new", taker: DEL, takenAt: DEL, doneAt: DEL, doneBy: DEL });
@@ -715,9 +796,11 @@ setInterval(() => { tick(); if (!$("modalRoot").innerHTML && page === "over") dr
   let id = DEMO ? "ukazka" : params.get("c") || store.get("am_comp");
   if (!id) { try { const l = await B.getCol("competitions"); const live = l.filter(c => c.startedAt && !c.finishedAt).sort((a, b) => (a.test ? 1 : 0) - (b.test ? 1 : 0) || b.startedAt - a.startedAt);
     id = (live[0] || l.filter(c => !c.finishedAt).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))[0] || l[0])?.id; } catch {} }
-  if (!id) { setConn("wait", "Bez soutěže"); return compModal(); }
+  if (!id) { setConn("wait", "Bez akce"); return compModal(); }
   startComp(id);
 })();
+// start bez internetu: funguje, když je vedle index.html nahraný soubor sw.js
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
 </script>
 </body>
 </html>
